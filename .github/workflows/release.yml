@@ -30,4 +30,9 @@ jobs:
             echo "Tag must match the version in system.json"
             exit 1
           fi
-          gh release create "$RELEASE_TAG" artifacts/system.json artifacts/stellaknights-v14.zip --target "$GITHUB_SHA" --title "Stella Knights $RELEASE_TAG for Foundry VTT v14" --notes-file RELEASE-NOTES.md --latest
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" artifacts/system.json artifacts/stellaknights-v14.zip --clobber
+            gh release edit "$RELEASE_TAG" --latest
+          else
+            gh release create "$RELEASE_TAG" artifacts/system.json artifacts/stellaknights-v14.zip --target "$GITHUB_SHA" --title "Stella Knights $RELEASE_TAG for Foundry VTT v14" --notes-file RELEASE-NOTES.md --latest
+          fi
