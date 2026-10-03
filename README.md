@@ -19,7 +19,7 @@ https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/latest/download/sy
 
 Repository สำหรับ v14: [https://github.com/NicoRaz/FVTT-StellaKnights-System](https://github.com/NicoRaz/FVTT-StellaKnights-System) มี manifest และ ZIP ใน GitHub Releases สำหรับติดตั้งและอัปเดตผ่าน Foundry ไม่มี npm install หรือ build ที่ต้องทำเพื่อใช้ใน Foundry
 
-> การปรับ Flower/Color Items และ Foundry Combat ด้านล่างเป็นชุดพัฒนาที่ยังไม่ได้เผยแพร่ Release
+> Flower/Color Items และ Foundry Combat พร้อมใช้งานในเวอร์ชัน 1.2.0
 
 ## ใช้ชีท Edit / Play และ Skill Items
 
