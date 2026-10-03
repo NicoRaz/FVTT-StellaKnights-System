@@ -1,7 +1,11 @@
-Stella Knights v1.0.0 for Foundry VTT v14, adapted from ksx0330/FVTT-StellaKnights-System under its MIT code license.
+Stella Knights v1.1.0 for Foundry VTT v14
 
-Includes Bringer/Sheath/Embraced/Eclipsed sheets, 54 core skills, seven Stages, six-Garden arena, Charge/Attack workflows, consensual Bouquet support, Distortion, session scenes and campaign medals. Thai and English labels supplement the upstream Korean/Japanese translations.
+- Capitalized Bringer / Sheath sheet titles; clarified Starting Endurance, Base Defense and Effective Defense.
+- Edit / Play mode, collapsible Skill loadout and scroll/section state preserved across sheet updates.
+- Portrait and Prototype Token use the native File Browser; Token settings and optional Tokenizer API integration.
+- Drag native Skill Items from the Item Directory or Compendiums into numbered slots. Drag between slots or edit Number to swap; drop into the reserve section to unassign. Repeated catalog drops reuse the owned Item.
+- Shared Skill library import makes catalog Items readable to players. Existing character Items remain compatible.
 
-Install using the system.json asset attached to this release. Its manifest URL tracks the latest release; its download URL points to this version's ZIP.
+Validation: 32 automated tests pass, including slot swaps, reserve assignment, invalid/forbidden drops, File Browser paths, Tokenizer API dispatch and scroll/collapse state. Manifest, JavaScript, JSON and Handlebars checks pass. Browser interaction checks use mocked Foundry APIs; this release has not been run on an actual Foundry v14 server or with the installed Tokenizer module.
 
-Validation: 25 automated tests pass, with all skill handlers and 33 Stage Action routines exercised. Manifest, JavaScript imports/syntax, JSON and Handlebars checks pass. Static layout was checked in Chromium. This release has not been run in an actual Foundry v14 server; verify world loading, multi-user sockets and migration before your main game.
+Install/update with https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/latest/download/system.json

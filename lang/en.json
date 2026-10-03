@@ -40,7 +40,7 @@
   "Stella.Save": "Save",
   "Stella.Garden": "Garden",
   "Stella.Partner": "Partner",
-  "Stella.Initial": "Initial",
+  "Stella.Initial": "Starting Endurance",
   "Stella.Tier": "Wish Tier",
   "Stella.Unknown": "Unknown",
   "Stella.DistortionLife": "Immortal Life",
@@ -80,5 +80,9 @@
   "TYPES.Actor.sheath": "Sheath",
   "TYPES.Actor.embraced": "Embraced",
   "TYPES.Actor.eclipsed": "Eclipsed",
-  "TYPES.Item.ability": "Skill"
+  "TYPES.Item.ability": "Skill",
+  "Stella.InitialHelp": "Endurance at character creation, before Stage bonuses. Healing may exceed this value.",
+  "Stella.BaseDefense": "Base Defense",
+  "Stella.EffectiveDefense": "Effective",
+  "Stella.DefenseHelp": "Base Defense is editable. Effective Defense includes current effects and is used against attacks."
 }

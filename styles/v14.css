@@ -18,3 +18,13 @@
 .stella-v14 .arena-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.stella-v14 .garden{border:1px solid var(--stella-line);border-radius:14px;background:#fff9f4;padding:12px;min-height:85px}.stella-v14 .garden.center{background:#e9d8e1;text-align:center;display:grid;place-content:center}.stella-v14 .garden.active{border:2px solid #794660}.stella-v14 .stella-inline{display:inline-flex;flex-direction:row;align-items:center;gap:6px;margin-right:15px}
 @media(max-width:650px){.stella-v14 .set-ability,.stella-v14 .stella-fields{grid-template-columns:1fr}.stella-v14 .stella-stats{grid-template-columns:repeat(2,1fr)}}
 .stella.stella-v14 .set-ability .ability{border:1px solid var(--stella-line);padding:12px;height:auto}.stella.stella-v14 .set-ability .ability .title{font:700 17px Georgia,serif;text-align:left}.stella.stella-v14 .title-header{background:#794660;border:0;border-bottom:2px solid #4f2d40}.stella-v14 .garden.blank{visibility:hidden}
+/* Keep one sheet scroller: updates restore this element's position. */
+.stella-v14.sheet.actor .window-content{overflow:hidden;min-height:0}
+.stella-v14.sheet.actor .stella-content{height:100%;min-height:0;overflow-y:auto;padding-right:6px}
+.stella-v14 .mode-play .edit-only{display:none}
+.stella-v14 input:disabled,.stella-v14 select:disabled,.stella-v14 textarea:disabled{opacity:1;background:transparent;border-color:transparent;color:var(--stella-ink)}
+.stella-v14 .stella-portraits{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 116px}
+.stella-v14 .stella-portraits>button{padding:0;background:transparent;border:0;line-height:0}
+.stella-v14 .token-img{object-fit:contain;border:1px solid var(--stella-line);border-radius:50%}
+.stella-v14 .mode-edit [draggable=true]{cursor:grab}
+.stella-v14 .mode-edit [data-slot]{outline:1px dashed var(--stella-line);outline-offset:3px}

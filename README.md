@@ -19,10 +19,20 @@ https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/latest/download/sy
 
 Repository สำหรับ v14: [https://github.com/NicoRaz/FVTT-StellaKnights-System](https://github.com/NicoRaz/FVTT-StellaKnights-System) มี manifest และ ZIP ใน GitHub Releases สำหรับติดตั้งและอัปเดตผ่าน Foundry ไม่มี npm install หรือ build ที่ต้องทำเพื่อใช้ใน Foundry
 
+## ใช้ชีท Edit / Play และ Skill Items
+
+- ชีทเริ่มใน **Play** เพื่อใช้สกิลและปรับทรัพยากรระหว่างเล่น กด **Play → Edit** เพื่อแก้ข้อมูลตัวละครและจัดสกิล แล้วกด **Edit → Play** เมื่อพร้อมเล่น
+- ใน Edit คลิกรูป **Portrait** หรือ **Token** เพื่อเลือกไฟล์ผ่าน Foundry File Browser รูป Token เปลี่ยน Prototype Token; ใช้ **Token settings** สำหรับการตั้งค่าเพิ่มเติม หากเปิดโมดูล **Tokenizer** ที่รองรับ Foundry เวอร์ชันของคุณ จะมีปุ่ม Tokenizer เรียก API `tokenizeActor` ของโมดูล
+- GM กด **Skill Item Library · Import / Open** เพื่อนำเข้าหรือเปิดคลัง 54 สกิลใน Item Directory ผู้เล่นอ่านและลาก Item จากคลังได้ ไม่ต้องสร้างใหม่ทีละสกิล
+- ลาก Item จาก Directory หรือ Compendium ลงช่อง **No. 1–6** ใน Edit เพื่อเพิ่มสกิลของ Actor ลากสกิลที่มีอยู่ระหว่างช่องเพื่อสลับหมายเลข หรือปรับ Number บน Item sheet หากปลายทางมีสกิล ระบบจะสลับช่องให้
+- ลากลงส่วน **Skill / Custom** เพื่อเก็บในสำรอง (No. 0) สกิลเดิมยังอยู่เมื่อเปลี่ยนชุด ช่อง **No. 1** สงวนให้ Knight’s Etiquette และจัด loadout ได้เมื่อไม่มี Battle ที่กำลังดำเนินอยู่
+- กดหัวข้อ **Skill loadout** เพื่อพับ/ขยาย ชีทเก็บสถานะพับและตำแหน่งเลื่อนขณะอัปเดตหรือเปลี่ยนโหมด
+- **Starting Endurance** คือ Endurance ตั้งต้นก่อนโบนัส Stage ไม่ใช่เพดานการฟื้น **Base Defense** คือค่าพื้นฐานที่แก้ไขได้ ส่วน **Effective** คือค่าที่ใช้กับการโจมตีหลังรวมเอฟเฟกต์ปัจจุบัน
+
 ## เริ่มเล่น
 
 - สร้าง Actor แบบ **Bringer** และ **Sheath** สำหรับแต่ละคู่ โดยมอบ Ownership ให้ผู้เล่นที่ควบคุมบทนั้น
-- บนแผ่น Bringer เลือกคู่หูใน Partner แล้วให้ GM กด **Sync Pair** เพื่อส่ง Wish, Flower/Color, keyword และ Hope/Despair ที่ตรงข้ามไปยัง Sheath ข้อมูลส่วนตัวของ Sheath ยังแก้ไขแยกได้
+- เปลี่ยนชีทเป็น Edit แล้วบนแผ่น Bringer เลือกคู่หูใน Partner แล้วให้ GM กด **Sync Pair** เพื่อส่ง Wish, Flower/Color, keyword และ Hope/Despair ที่ตรงข้ามไปยัง Sheath ข้อมูลส่วนตัวของ Sheath ยังแก้ไขแยกได้
 - กด **สร้างชุดสกิล** เลือกดอกไม้ สี และห้าสกิลที่ไม่ซ้ำ ช่อง 1 เป็น Knight’s Etiquette ค่าสีเริ่มต้นถูกกรอกให้อัตโนมัติ
 - สกิลที่เปลี่ยนออกจะเก็บไว้ในช่อง 0 เป็นสกิลสำรองตามกฎแคมเปญ ถ้าต้องการจัดช่องเอง ให้แก้ช่องเดิมเป็น 0 ก่อน แล้วค่อยใส่สกิลใหม่ลงช่องว่าง
 - สร้าง **Embraced** หรือ **Eclipsed** เป็นศัตรูและจัดชุดสกิลแบบเดียวกัน Eclipsed มีคู่ Sheath ได้ ส่วน Embraced ไม่มีคู่ตามกฎ

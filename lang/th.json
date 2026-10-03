@@ -40,7 +40,7 @@
   "Stella.Save": "บันทึก",
   "Stella.Garden": "สวน",
   "Stella.Partner": "คู่หู",
-  "Stella.Initial": "ค่าเริ่มต้น",
+  "Stella.Initial": "Endurance ตั้งต้น",
   "Stella.Tier": "ระดับคำปรารถนา",
   "Stella.Unknown": "ไม่ระบุ",
   "Stella.DistortionLife": "Immortal Life",
@@ -80,5 +80,9 @@
   "TYPES.Actor.sheath": "Sheath",
   "TYPES.Actor.embraced": "Embraced",
   "TYPES.Actor.eclipsed": "Eclipsed",
-  "TYPES.Item.ability": "สกิล"
+  "TYPES.Item.ability": "สกิล",
+  "Stella.InitialHelp": "Endurance ตั้งต้นก่อนโบนัส Stage การฟื้นสามารถเกินค่านี้ได้",
+  "Stella.BaseDefense": "Defense พื้นฐาน",
+  "Stella.EffectiveDefense": "ค่าที่ใช้จริง",
+  "Stella.DefenseHelp": "ค่าพื้นฐานแก้ไขได้ ค่าที่ใช้จริงรวมเอฟเฟกต์ปัจจุบันและใช้รับการโจมตี"
 }

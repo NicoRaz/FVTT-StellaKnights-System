@@ -2,37 +2,106 @@
 import {ID,COLORS,FLOWERS,isFighter,isEnemy,wishMedals,escapeHTML as esc} from "./rules.js";
 import {t,formDialog,currentActors,notifyError} from "./helpers.js";
 import {request} from "./socket.js";
-import {setupActor} from "./library.js";
+import {setupActor,importLibrary} from "./library.js";
 import {effectiveDefense} from "./engine.js";
+import {slotUpdates,assertLoadoutEditable} from "./loadout.js";
 export class StellaActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
   static DEFAULT_OPTIONS={tag:"form",classes:["stella","stella-v14","sheet","actor"],position:{width:860,height:830},
     form:{submitOnChange:true,closeOnSubmit:false,handler:StellaActorSheet.submit},
-    actions:{setup:StellaActorSheet.setup,charge:StellaActorSheet.charge,use:StellaActorSheet.use,
+    actions:{mode:StellaActorSheet.mode,portrait:StellaActorSheet.pickImage,token:StellaActorSheet.pickImage,tokenizer:StellaActorSheet.tokenizer,tokenConfig:StellaActorSheet.tokenConfig,library:StellaActorSheet.library,setup:StellaActorSheet.setup,charge:StellaActorSheet.charge,use:StellaActorSheet.use,
       edit:StellaActorSheet.edit,delete:StellaActorSheet.remove,new:StellaActorSheet.create,
       plus:StellaActorSheet.adjust,minus:StellaActorSheet.adjust,echo:StellaActorSheet.echo,
       life:StellaActorSheet.distortion,atypia:StellaActorSheet.distortion,flame:StellaActorSheet.flame,
       pair:StellaActorSheet.pair,battle:()=>game.stellaknights.openBattle(),bouquet:()=>game.stellaknights.distributeBouquet()}};
-  static PARTS={main:{template:`systems/${ID}/templates/bringer-sheet.html`}};
+  static PARTS={main:{scrollable:[""],template:`systems/${ID}/templates/bringer-sheet.html`}};
   async _prepareContext(options) {
     const context=await super._prepareContext(options),a=this.actor;
     const skills=a.items.filter(i=>i.type==="ability").sort((a,b)=>a.system.number-b.system.number||a.sort-b.sort);
-    return {...context,actor:a,system:a.system,editable:this.isEditable,fighter:isFighter(a),enemy:isEnemy(a),
+    return {...context,editing:!!this.editMode,sections:this.sections??{basic:true,loadout:true,reserve:false},typeLabel:a.type.charAt(0).toUpperCase()+a.type.slice(1),tokenImage:a.prototypeToken.texture.src,hasTokenizer:!!game.modules.get("vtta-tokenizer")?.active,canImport:game.user.isGM,actor:a,system:a.system,editable:this.isEditable,fighter:isFighter(a),enemy:isEnemy(a),
       status:!isFighter(a)?"Sheath":a.system.hp.value===0?t("Incapacitated"):a.system.done?t("Done"):t("Standby"),
       derivedDefense:isFighter(a)?effectiveDefense(a):0,medalsRequired:wishMedals(a.system.details.wishTier)??t("Unknown"),
       partners:game.actors.filter(x=>x.id!==a.id).map(x=>({id:x.id,name:x.name})),colors:Object.keys(COLORS),flowers:FLOWERS,karmaChoices:{hope:t("Hope"),despair:t("Despair")},
       slots:Array.from({length:6},(_,index)=>({number:index+1,item:skills.find(i=>i.system.number===index+1)})),items:skills};
   }
+  async _renderHTML(context,options) {
+    this.scrollPosition=this.element?.querySelector(".stella-content")?.scrollTop??this.scrollPosition??0;
+    return super._renderHTML(context,options);
+  }
+  _onRender(context,options) {
+    super._onRender(context,options);
+    const root=this.element.querySelector(".stella-content");
+    root.scrollTop=this.scrollPosition??0;
+    this.sections??={basic:true,loadout:true,reserve:false};
+    root.querySelectorAll("details[data-section]").forEach(d=>d.addEventListener("toggle",()=>{this.sections[d.dataset.section]=d.open;}));
+    root.querySelectorAll("[name]").forEach(input=>{
+      const live=["system.hp.value","system.bouquet","system.garden","system.reportReroll"].includes(input.name);
+      input.disabled=!this.isEditable||(!this.editMode&&!live);
+    });
+    // Capture prevents the base sheet from handling the same Item a second time.
+    root.addEventListener("dragstart",event=>{
+      const row=event.target.closest("[data-item-id]");
+      if(!row?.dataset.itemId)return;
+      event.stopImmediatePropagation();
+      const item=this.actor.items.get(row.dataset.itemId);
+      if(item)event.dataTransfer.setData("text/plain",JSON.stringify(item.toDragData()));
+    },true);
+    root.addEventListener("dragover",event=>{if(this.isEditable&&this.editMode){event.preventDefault();event.stopImmediatePropagation();}},true);
+    root.addEventListener("drop",async event=>{
+      event.preventDefault();event.stopImmediatePropagation();
+      try {
+        if(!this.isEditable||!this.editMode)throw Error("Switch to Edit mode to change skills");
+        const data=foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+        if(data.type!=="Item")return;
+        const item=await Item.implementation.fromDropData(data);
+        await this.dropSkill(item,Number(event.target.closest("[data-slot]")?.dataset.slot??0));
+      }catch(e){notifyError(e);}
+    },true);
+  }
+  async dropSkill(source,number) {
+    if(!this.isEditable||!this.editMode)throw Error("Switch to Edit mode to change skills");
+    assertLoadoutEditable();
+    if(source.type!=="ability")throw Error("Drop a Skill Item");
+    if(!source.isOwner&&!source.testUserPermission(game.user,"OBSERVER"))throw Error("You cannot read this Item");
+    let item=this.actor.items.get(source.id);
+    if(source.parent!==this.actor)item=this.actor.items.find(i=>source.system.key&&i.system.key===source.system.key);
+    // Validate before creating a copy so an invalid drop leaves the actor untouched.
+    const candidate=item??{id:source.id,type:source.type,system:{...source.system,number:0}};
+    slotUpdates(this.actor.items,candidate,number);
+    if(!item){const data=source.toObject();delete data._id;data.system.number=0;data.system.charge=0;[item]=await this.actor.createEmbeddedDocuments("Item",[data]);}
+    await this.actor.updateEmbeddedDocuments("Item",slotUpdates(this.actor.items,item,number));
+    return item;
+  }
+  static async mode() {if(this.isEditable){this.editMode=!this.editMode;await this.render();}}
+  static async library() {
+    try {if(game.user.isGM)await importLibrary(game.user);ui.sidebar.activateTab("items");}catch(e){notifyError(e);}
+  }
+  static async pickImage(_event,target) {
+    if(!this.isEditable||!this.editMode)return;
+    const token=target.dataset.action==="token",field=token?"prototypeToken.texture.src":"img";
+    new foundry.applications.apps.FilePicker.implementation({type:"image",current:token?this.actor.prototypeToken.texture.src:this.actor.img,
+      callback:async path=>{await this.actor.update({[field]:path});}}).browse();
+  }
+  static async tokenConfig() {if(this.isEditable&&this.editMode)this.actor.prototypeToken.sheet.render(true);}
+  static async tokenizer() {
+    try {if(!this.isEditable||!this.editMode)return;
+      const api=game.modules.get("vtta-tokenizer")?.api;
+      if(!api?.tokenizeActor)throw Error("Enable a compatible Tokenizer module first");
+      await api.tokenizeActor(this.actor);
+    }catch(e){notifyError(e);}
+  }
   static async submit(_event,_form,formData) {if(this.isEditable)await this.actor.update(formData.object);}
-  static async setup() {try{await setupActor(this.actor);}catch(e){notifyError(e);}}
+  static async setup() {if(!this.isEditable||!this.editMode)return;try{await setupActor(this.actor);}catch(e){notifyError(e);}}
   static async pair() {try{await request("sync-pair",{actor:this.actor.id});}catch(e){notifyError(e);}}
   static async charge() {try{await request("charge",{actor:this.actor.id});}catch(e){notifyError(e);}}
   static async edit(_event,target) {this.actor.items.get(target.dataset.item)?.sheet.render(true);}
   static async remove(_event,target) {
+    if(!this.isEditable||!this.editMode)return;
+    try{assertLoadoutEditable();}catch(e){notifyError(e);return;}
     const item=this.actor.items.get(target.dataset.item);if(!item)return;
     if(item.system.number===1){notifyError(Error("Knight’s Etiquette cannot be removed"));return;}
     if(await foundry.applications.api.DialogV2.confirm({window:{title:t("Delete")},content:`<p>${esc(item.name)}?</p>`}))await item.delete();
   }
-  static async create() {const [i]=await this.actor.createEmbeddedDocuments("Item",[{name:t("NewAbility"),type:"ability"}]);i.sheet.render(true);}
+  static async create() {if(!this.isEditable||!this.editMode)return;const [i]=await this.actor.createEmbeddedDocuments("Item",[{name:t("NewAbility"),type:"ability"}]);i.sheet.render(true);}
   static async adjust(_event,target) {try{await request("set-die",{actor:this.actor.id,item:target.dataset.item,delta:target.dataset.action==="plus"?1:-1});}catch(e){notifyError(e);}}
   static async echo(_event,target) {
     const item=this.actor.items.get(target.dataset.item);if(item)await ChatMessage.create({speaker:ChatMessage.getSpeaker({actor:this.actor}),content:`<h3>${esc(item.name)}</h3><pre>${esc(item.system.effect)}</pre>`});

@@ -1,8 +1,8 @@
 {
   "id": "stellaknights",
   "title": "Silver Sword of Stella Knights — v14",
-  "description": "Bringer/Sheath sheets, skill library, six-garden arena, Bouquet support, Distortion and Stellar Battles. Based on ksx0330/FVTT-StellaKnights-System.",
-  "version": "1.0.0",
+  "description": "Bringer / Sheath sheets, skill library, six-garden arena, Bouquet support, Distortion and Stellar Battles. Based on ksx0330/FVTT-StellaKnights-System.",
+  "version": "1.1.0",
   "compatibility": {
     "minimum": "14",
     "verified": "14",
@@ -67,5 +67,5 @@
   "license": "LICENSE.txt",
   "url": "https://github.com/NicoRaz/FVTT-StellaKnights-System",
   "manifest": "https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/latest/download/system.json",
-  "download": "https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/download/v1.0.0/stellaknights-v14.zip"
+  "download": "https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/download/v1.1.0/stellaknights-v14.zip"
 }

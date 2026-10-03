@@ -9,7 +9,7 @@ export async function loadCatalog() {
 }
 export function skillDocument(record, slot = 0) {
   const typeLine = record.text.match(/Type\s+(.*?)\s+Timing/);
-  return {name:record.name, type:"ability", img:`systems/${ID}/assets/emblem.svg`, system:{
+  return {name:record.name, type:"ability", img:`systems/${ID}/assets/emblem.svg`, ownership:{default:2}, system:{
     key:record.id, type:record.group, class:typeLine?.[1] ?? "", timing:record.timing,
     timingKey:record.timing, effect:record.text, page:record.page, number:slot, charge:0}};
 }
@@ -48,6 +48,9 @@ export async function createLoadout(data, user) {
 export async function importLibrary(user) {
   gmOnly(user);
   const existing = new Set(game.items.map(i=>i.system.key));
+  const keys=new Set(skills.map(s=>s.id));
+  const hidden=game.items.filter(i=>i.type==="ability"&&keys.has(i.system.key)&&(i.ownership.default??0)<2);
+  if(hidden.length)await Item.updateDocuments(hidden.map(i=>({_id:i.id,"ownership.default":2})));
   await Item.createDocuments(skills.filter(s=>!existing.has(s.id)).map(s=>skillDocument(s)));
   await chat(t("Library"), `${skills.length} skills ready. Stage data are available in the Stellar Battle panel.`);
 }
