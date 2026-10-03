@@ -74,3 +74,17 @@ test('Knight’s Etiquette can be dragged out of slot 1 and deleted through the 
   foundry.applications.api.DialogV2={confirm:async()=>true};
   await StellaActorSheet.remove.call(sheet,null,{dataset:{item:'basic'}});assert.equal(deleted,true);
 });
+
+test('v14 sidebar navigation uses changeTab and expands the sidebar for Combat and Items',async()=>{
+ const {openSidebarTab}=await import('../module/helpers.js');const calls=[];
+ ui.sidebar={expand:()=>calls.push('expand'),changeTab:(tab,group)=>calls.push([tab,group])};
+ openSidebarTab('combat');openSidebarTab('items');
+ assert.deepEqual(calls,['expand',['combat','primary'],'expand',['items','primary']]);
+});
+test('Details and Battle tabs preserve separate scroll positions across rerenders',async()=>{
+ const {sheet}=fixture();const root={scrollTop:180,dataset:{activeTab:'details'}};
+ sheet.element={querySelector:()=>root};await StellaActorSheet.switchTab.call(sheet,null,{dataset:{tab:'battle'}});
+ assert.equal(sheet.activeTab,'battle');assert.equal(sheet.scrollPosition,0);await sheet._renderHTML({},{});assert.equal(sheet.scrollPosition,0);
+ root.dataset.activeTab='battle';root.scrollTop=300;await StellaActorSheet.switchTab.call(sheet,null,{dataset:{tab:'details'}});
+ assert.equal(sheet.scrollPosition,180);assert.equal(sheet.tabScroll.battle,300);
+});

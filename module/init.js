@@ -8,7 +8,7 @@ import {loadCatalog,skills} from "./library.js";
 import {registerSocket,request} from "./socket.js";
 import {execute} from "./engine.js";
 import {ID} from "./rules.js";
-import {notifyError,state,t} from "./helpers.js";
+import {notifyError,state,t,openSidebarTab} from "./helpers.js";
 import {StellaCombat} from "./combat.js";
 import {archiveCombat,ensureCombat,stellarCombat,persistBattle} from "./combat-state.js";
 import {crestDocuments,crestItems,syncCrest} from "./crest.js";
@@ -23,7 +23,7 @@ Hooks.once("init",()=>{
   game.settings.register(ID,"schemaVersion",{scope:"world",config:false,type:Number,default:0});
   game.settings.register(ID,"session",{scope:"world",config:false,type:Object,default:{active:false,phase:"prologue",pairs:[],cursor:0}});
   game.settings.register(ID,"allowBattleBouquets",{name:"Allow Bouquets during Stellar Battle",hint:"House rule (p.114). By default there is no Audience in the Final Chapter.",scope:"world",config:true,type:Boolean,default:false});
-  game.stellaknights={request,openCombat:()=>ui.sidebar.activateTab("combat"),openBattle:()=>{battlePanel??=new BattlePanel();battlePanel.render(true);},
+  game.stellaknights={request,openCombat:()=>openSidebarTab("combat"),openBattle:()=>{battlePanel??=new BattlePanel();battlePanel.render(true);},
     distributeBouquet:()=>{bouquetDialog??=new BouquetDialog();bouquetDialog.render(true);},
     BouquetDialog:[],getBattle:state};
   // The upstream localization helpers remain available to user-authored templates.

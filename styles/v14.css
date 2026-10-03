@@ -30,3 +30,8 @@
 .stella-v14 .mode-edit [data-slot]{outline:1px dashed var(--stella-line);outline-offset:3px}
 .stella-v14 .stella-stat{display:block;min-height:30px;padding:4px 7px;font-size:20px;font-weight:700}
 .stella-v14 .stella-crest{border:1px dashed var(--stella-line);border-radius:8px;padding:12px;margin:8px 0}
+.stella-v14 .stella-sheet-tabs{display:flex;gap:8px;border-bottom:2px solid var(--stella-accent);padding:0 0 8px;margin-bottom:12px}
+.stella-v14 .stella-sheet-tabs button{flex:1;padding:10px;font-size:15px}
+.stella-v14 .stella-sheet-tabs [aria-selected=true]{background:var(--stella-accent);color:white;font-weight:700}
+.stella-v14 [data-sheet-panel][hidden]{display:none!important}
+.stella-v14 .stella-combat-controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap}

@@ -23,13 +23,13 @@ export async function ensureCombat(actors,combatId=null) {
   let combat=combatId?game.combats.get(combatId):game.combat;
   if(combat?.getFlag(ID,'battle')?.active)throw Error('Combat is already active');
   if(combatId&&!combat)throw Error("Combat not found");
-  if(!combat||combat.started)combat=await Combat.implementation.create({scene:globalThis.canvas?.scene?.id??null,active:true});
+  if(!combat||combat.started)combat=await CONFIG.Combat.documentClass.create({scene:globalThis.canvas?.scene?.id??null,active:true});
   const seen=new Set();
   const unwanted=combat.combatants.filter(c=>{const duplicate=seen.has(c.actorId);seen.add(c.actorId);return duplicate||!actors.some(a=>c.actorId===a.id);});
   if(unwanted.length)await combat.deleteEmbeddedDocuments('Combatant',unwanted.map(c=>c.id));
   const missing=actors.filter(a=>!combat.combatants.some(c=>c.actorId===a.id));
   if(missing.length)await combat.createEmbeddedDocuments('Combatant',missing.map(a=>({actorId:a.id,name:a.name,img:a.img,
-    tokenId:globalThis.canvas?.scene?.tokens?.find(t=>t.actorId===a.id)?.id??null})));
+    sceneId:globalThis.canvas?.scene?.id??null,tokenId:globalThis.canvas?.scene?.tokens?.find(t=>t.actorId===a.id)?.id??null})));
   await setCombatOrder(combat,actors.map(a=>a.id));
   // Attach first so all subsequent phase updates use this native Combat document.
   await combat.update({[`flags.${ID}.battle`]:{active:false,round:0,phase:'set',actors:actors.map(a=>a.id),turn:0}});

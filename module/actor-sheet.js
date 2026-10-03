@@ -1,6 +1,6 @@
 // V14 adaptation of upstream StellaActorSheet; same fields and six-slot layout.
 import {ID,COLORS,FLOWERS,isFighter,isEnemy,wishMedals,escapeHTML as esc} from "./rules.js";
-import {t,formDialog,currentActors,notifyError} from "./helpers.js";
+import {t,formDialog,currentActors,notifyError,openSidebarTab} from "./helpers.js";
 import {request} from "./socket.js";
 import {setupActor,importLibrary} from "./library.js";
 import {effectiveDefense,effectiveCharge,effectiveAttackBonus} from "./engine.js";
@@ -9,7 +9,7 @@ import {crestItems,skillAllowed,validateSkillSlot,setCrestItem,syncCrest} from "
 export class StellaActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
   static DEFAULT_OPTIONS={tag:"form",classes:["stella","stella-v14","sheet","actor"],position:{width:860,height:830},
     form:{submitOnChange:true,closeOnSubmit:false,handler:StellaActorSheet.submit},
-    actions:{mode:StellaActorSheet.mode,portrait:StellaActorSheet.pickImage,token:StellaActorSheet.pickImage,tokenizer:StellaActorSheet.tokenizer,tokenConfig:StellaActorSheet.tokenConfig,library:StellaActorSheet.library,setup:StellaActorSheet.setup,charge:StellaActorSheet.charge,use:StellaActorSheet.use,
+    actions:{sheetTab:StellaActorSheet.switchTab,arena:()=>game.stellaknights.openBattle(),mode:StellaActorSheet.mode,portrait:StellaActorSheet.pickImage,token:StellaActorSheet.pickImage,tokenizer:StellaActorSheet.tokenizer,tokenConfig:StellaActorSheet.tokenConfig,library:StellaActorSheet.library,setup:StellaActorSheet.setup,charge:StellaActorSheet.charge,use:StellaActorSheet.use,
       edit:StellaActorSheet.edit,delete:StellaActorSheet.remove,new:StellaActorSheet.create,
       plus:StellaActorSheet.adjust,minus:StellaActorSheet.adjust,echo:StellaActorSheet.echo,
       life:StellaActorSheet.distortion,atypia:StellaActorSheet.distortion,flame:StellaActorSheet.flame,
@@ -18,14 +18,15 @@ export class StellaActorSheet extends foundry.applications.api.HandlebarsApplica
   async _prepareContext(options) {
     const context=await super._prepareContext(options),a=this.actor;
     const skills=a.items.filter(i=>i.type==="ability").sort((a,b)=>a.system.number-b.system.number||a.sort-b.sort);
-    return {...context,editing:!!this.editMode,sections:this.sections??{basic:true,loadout:true,reserve:false},typeLabel:a.type.charAt(0).toUpperCase()+a.type.slice(1),tokenImage:a.prototypeToken.texture.src,hasTokenizer:!!game.modules.get("vtta-tokenizer")?.active,canImport:game.user.isGM,actor:a,system:a.system,editable:this.isEditable,fighter:isFighter(a),enemy:isEnemy(a),
+    return {...context,activeTab:this.activeTab??"details",detailsTab:this.activeTab!=="battle",battleTab:this.activeTab==="battle",editing:!!this.editMode,sections:this.sections??{basic:true,loadout:true,reserve:false},typeLabel:a.type.charAt(0).toUpperCase()+a.type.slice(1),tokenImage:a.prototypeToken.texture.src,hasTokenizer:!!game.modules.get("vtta-tokenizer")?.active,canImport:game.user.isGM,actor:a,system:a.system,editable:this.isEditable,fighter:isFighter(a),enemy:isEnemy(a),
       status:!isFighter(a)?"Sheath":a.system.hp.value===0?t("Incapacitated"):a.system.done?t("Done"):t("Standby"),
       crest:crestItems(a),availableSkills:game.items.filter(i=>i.type==="ability"&&i.visible!==false&&skillAllowed(a,i)),derivedDefense:isFighter(a)?effectiveDefense(a):0,currentCharge:isFighter(a)?effectiveCharge(a):0,attackBonus:isFighter(a)?effectiveAttackBonus(a):0,medalsRequired:wishMedals(a.system.details.wishTier)??t("Unknown"),
       partners:game.actors.filter(x=>x.id!==a.id&&(a.type==="bringer"?x.type==="sheath":a.type==="sheath"?x.type==="bringer":true)).map(x=>({id:x.id,name:x.name})),colors:Object.keys(COLORS),flowers:FLOWERS,karmaChoices:{hope:t("Hope"),despair:t("Despair")},
       slots:Array.from({length:6},(_,index)=>({number:index+1,item:skills.find(i=>i.system.number===index+1)})),items:skills};
   }
   async _renderHTML(context,options) {
-    this.scrollPosition=this.element?.querySelector(".stella-content")?.scrollTop??this.scrollPosition??0;
+    const root=this.element?.querySelector(".stella-content");
+    if(!root?.dataset?.activeTab||root.dataset.activeTab===(this.activeTab??'details'))this.scrollPosition=root?.scrollTop??this.scrollPosition??0;
     return super._renderHTML(context,options);
   }
   _onRender(context,options) {
@@ -77,9 +78,14 @@ export class StellaActorSheet extends foundry.applications.api.HandlebarsApplica
     await this.actor.updateEmbeddedDocuments("Item",slotUpdates(this.actor.items,item,number));
     return item;
   }
+  static async switchTab(_event,target) {
+    const next=target.dataset.tab;if(!['details','battle'].includes(next)||next===(this.activeTab??'details'))return;
+    this.tabScroll??={};this.tabScroll[this.activeTab??'details']=this.element.querySelector('.stella-content').scrollTop;
+    this.activeTab=next;this.scrollPosition=this.tabScroll[next]??0;await this.render();
+  }
   static async mode() {if(this.isEditable){this.editMode=!this.editMode;await this.render();}}
   static async library() {
-    try {if(game.user.isGM)await importLibrary(game.user);ui.sidebar.activateTab("items");}catch(e){notifyError(e);}
+    try {if(game.user.isGM)await importLibrary(game.user);openSidebarTab("items");}catch(e){notifyError(e);}
   }
   static async pickImage(_event,target) {
     if(!this.isEditable||!this.editMode)return;

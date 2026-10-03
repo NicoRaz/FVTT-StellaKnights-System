@@ -2,7 +2,7 @@
   "id": "stellaknights",
   "title": "Silver Sword of Stella Knights — v14",
   "description": "Bringer / Sheath sheets, Flower and Color Item parents, Skill loadouts, native Foundry Combat, Stage routines and Bouquet support. Based on ksx0330/FVTT-StellaKnights-System.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "compatibility": {
     "minimum": "14",
     "verified": "14",
@@ -69,5 +69,5 @@
   "license": "LICENSE.txt",
   "url": "https://github.com/NicoRaz/FVTT-StellaKnights-System",
   "manifest": "https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/latest/download/system.json",
-  "download": "https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/download/v1.2.0/stellaknights-v14.zip"
+  "download": "https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/download/v1.2.1/stellaknights-v14.zip"
 }

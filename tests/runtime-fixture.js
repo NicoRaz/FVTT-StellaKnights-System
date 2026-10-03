@@ -34,7 +34,7 @@ export class MockCombat {
  async createEmbeddedDocuments(_type,docs){const created=docs.map(d=>({...d,id:'cb'+(++serial),actor:game.actors.get(d.actorId)}));this.combatants.push(...created);return created;}
  async deleteEmbeddedDocuments(_type,ids){this.combatants=new Collection(...this.combatants.filter(c=>!ids.includes(c.id)));}
  async updateEmbeddedDocuments(_type,updates){for(const u of updates)Object.assign(this.combatants.get(u._id),u);return updates;}
- static async create(data){const combat=new MockCombat(data);game.combats.push(combat);game.combat=combat;return combat;}
+ static async create(data){const combat=new this(data);game.combats.push(combat);game.combat=combat;return combat;}
 }
 export async function setup() {
  const settings=new Map([[ID+'.battle',{active:false,round:0,phase:'set',actors:[],maps:[],markers:[],charged:[]}]]);
@@ -42,7 +42,7 @@ export async function setup() {
   const match=config.content.match(/<option value="([^"]+)"/);return match?.[1]??null;
  }}}}};
  globalThis.canvas={scene:null};
- globalThis.Combat={implementation:MockCombat};
+ globalThis.CONFIG={Combat:{documentClass:MockCombat}};
  globalThis.game={combats:new Collection(),combat:null,actors:new Collection(),items:new Collection(),messages:new Collection(),users:new Collection(),
   i18n:{localize:key=>key},settings:{get:(ns,key)=>structuredClone(settings.get(ns+'.'+key)),set:async(ns,key,v)=>{settings.set(ns+'.'+key,structuredClone(v));return v;}}};
  const gm={id:'gm',name:'GM',isGM:true,active:true};game.user=gm;game.users.push(gm);

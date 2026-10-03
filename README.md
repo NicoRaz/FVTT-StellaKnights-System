@@ -23,6 +23,12 @@ Repository สำหรับ v14: [https://github.com/NicoRaz/FVTT-StellaKnight
 
 ## ใช้ชีท Edit / Play และ Skill Items
 
+> เวอร์ชัน 1.2.1 แยกแท็บ Details / Stellar Battle และแก้การเปิด Sidebar กับการสร้าง Combat สำหรับ Foundry v14
+
+- **Details** แสดงข้อมูลตัวละคร Partner, Wish, ประวัติ และ XP
+- **Stellar Battle** แสดงค่าสถานะปัจจุบัน Color, Flower, Skill loadout และสกิลสำรอง พร้อมปุ่ม Foundry Combat Tracker และ Stage / Arena แต่ละแท็บเก็บตำแหน่งเลื่อนแยกกัน
+
+
 - ชีทเริ่มใน **Play** เพื่อใช้สกิลและปรับทรัพยากรระหว่างเล่น กด **Play → Edit** เพื่อแก้ข้อมูลตัวละครและจัดสกิล แล้วกด **Edit → Play** เมื่อพร้อมเล่น
 - ใน Edit คลิกรูป **Portrait** หรือ **Token** เพื่อเลือกไฟล์ผ่าน Foundry File Browser รูป Token เปลี่ยน Prototype Token; ใช้ **Token settings** สำหรับการตั้งค่าเพิ่มเติม หากเปิดโมดูล **Tokenizer** ที่รองรับ Foundry เวอร์ชันของคุณ จะมีปุ่ม Tokenizer เรียก API `tokenizeActor` ของโมดูล
 - GM กด **Skill Item Library · Import / Open** เพื่อนำเข้าหรือเปิดคลัง 54 Skill Items, 7 Flower Items และ 6 Color Items ใน Item Directory ผู้เล่นอ่านและลาก Item จากคลังได้ ไม่ต้องสร้างใหม่ทีละสกิล

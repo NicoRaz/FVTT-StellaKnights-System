@@ -113,3 +113,16 @@ test('Round and Stage effects disappear from current stats when the battle ends'
  assert.equal(effectiveCharge(knight),6);assert.equal(effectiveAttackBonus(knight),3);assert.equal(effectiveDefense(knight),4);
  await saveState({...state(),active:false});assert.equal(effectiveCharge(knight),3);assert.equal(effectiveAttackBonus(knight),0);assert.equal(effectiveDefense(knight),3);
 });
+
+test('v14 Combat creates and starts through the configured document class without legacy globals',async()=>{
+ const {knight,ally,enemy,gm,rig}=await setup();await saveState({...state(),active:false});
+ const {StellaCombat}=await import('../module/combat.js');CONFIG.Combat.documentClass=StellaCombat;
+ delete globalThis.Combat;game.socket={on(){},emit(){}};registerSocket(execute);
+ canvas.scene={id:'scene',tokens:[{id:'token-knight',actorId:knight.id},{id:'token-enemy',actorId:enemy.id},{id:'token-ally',actorId:ally.id}]};
+ const combat=await ensureCombat([enemy,knight,ally]);assert.ok(combat instanceof StellaCombat);
+ for(const cb of combat.combatants){assert.equal(cb.sceneId,'scene');assert.ok(cb.tokenId);}
+ await combat.startCombat();assert.equal(game.combat.id,combat.id);assert.equal(state().phase,'set');assert.equal(combat.round,1);
+ await combat.nextTurn();assert.equal(state().phase,'charge');
+ for(const actor of [enemy,knight,ally]){rig(Array(effectiveCharge(actor)).fill(4));await execute('charge',{actor:actor.id},gm);await execute('resolve',{},gm);}
+ await combat.nextTurn();assert.equal(state().phase,'actions');assert.equal(combat.turn,0);assert.equal(state().actors[0],enemy.id);
+});

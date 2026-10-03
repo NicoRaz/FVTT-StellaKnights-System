@@ -32,3 +32,8 @@ export async function pick(title, choices, {multiple = false, label = "Target"} 
 export async function askNumber(title, initial = 1, min = 0, max = 99) {
   return formDialog(title, `<input type="number" name="n" min="${min}" max="${max}" value="${initial}" required>`, form => Number(form.elements.n.value));
 }
+// v14 Sidebar is an ApplicationV2 with a primary tab group.
+export function openSidebarTab(tab) {
+  ui.sidebar.expand();
+  ui.sidebar.changeTab(tab,'primary');
+}
