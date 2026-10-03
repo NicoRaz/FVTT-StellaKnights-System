@@ -1,0 +1,434 @@
+[
+  {
+    "id": "knights-etiquette",
+    "name": "Knight’s Etiquette",
+    "group": "Basic",
+    "page": 51,
+    "timing": "your-turn",
+    "text": "Attack / Move · Your Turn\nRoll a 2-dice Attack against one target and move one space, once each in either order."
+  },
+  {
+    "id": "pride-roses",
+    "name": "Pride & Roses",
+    "group": "Rose",
+    "page": 57,
+    "timing": "your-turn",
+    "text": "★ Pride & Roses           Roses blooming in full glory…\nType      Attack / Gambit          Timing Your Turn\n          Roll a [2 dice Attack] against 1 target, then roll another [2\nEffect    dice Attack] against 1 target. Afterward, you recover 2\n          Endurance.\n          A skill that executes a graceful, high-speed barrage of attacks\nFlavor\n          reminiscent of a blossoming rose."
+  },
+  {
+    "id": "purifying-rose",
+    "name": "Purifying Rose",
+    "group": "Rose",
+    "page": 57,
+    "timing": "your-turn",
+    "text": "Purifying Rose         Be dyed in pure love…\nType      Gambit / Support       Timing Your Turn\n          Restore [1 die] Endurance to all targets of your choice in\nEffect    your Garden. Roll the die once, applying the same result to\n          all chosen.\n          The roses bloom all around, their petals dancing gracefully,\nFlavor\n          and their fragrance gently heals damaged Stellar Dresses."
+  },
+  {
+    "id": "duel",
+    "name": "Duel",
+    "group": "Rose",
+    "page": 57,
+    "timing": "your-turn",
+    "text": "Duel     Honorable single combat…\nType      Move / Gambit            Timing Your Turn\n          If you are a Stellar Knight, select 1 Enemy. If you are an\n          Enemy, select 1 Stellar Knight. Place yourself and the chosen\n          character in a Garden with no other characters present.\nEffect\n          This action is not considered movement (it is unaffected by\n          skills referencing the number of spaces moved or even the\n          act of moving itself!).\nFlavor    Let’s move this to a fitting stage, shall we? Follow me."
+  },
+  {
+    "id": "royal-rose-dress",
+    "name": "Royal Rose Dress",
+    "group": "Rose",
+    "page": 57,
+    "timing": "your-turn/passive",
+    "text": "Royal Rose Dress           Flower in abundance, in your Knight's favor…\nType      Gambit / Support        Timing Your Turn / Passive\n          Effect 1: During your turn, you may remove 1 Set die from\n          this skill to allow another character to roll a [1 dice Charge\n          check] and restore 2 Endurance.\n          Effect 2: You passively gain the following effects depending\nEffect\n          on the number of Set dice placed on this skill:\n          0 dice → No effect\n          1+ dice → You lose -1 Defense, but gain +1 dice rolled to all\n          [Attack checks] you perform.\n          Rose petals dance around you gracefully, adorning you like\nFlavor\n          an exquisite dress."
+  },
+  {
+    "id": "aquilegia-the-fool",
+    "name": "Aquilegia: The Fool",
+    "group": "Columbine",
+    "page": 59,
+    "timing": "your-turn",
+    "text": "★ Aquilegia: The Fool           Blade of the joker…\nType     Attack                  Timing Your Turn\n         Roll a [(3 + Round count) dice Attack] against 1 target.\nEffect\n         Afterwards, you lose [Round count] Endurance.\n         A blade swung with reckless abandon. A straightforward\nFlavor\n         strike that seeks victory, heedless of your own well-being."
+  },
+  {
+    "id": "aquilegia-the-remnant",
+    "name": "Aquilegia: The Remnant",
+    "group": "Columbine",
+    "page": 59,
+    "timing": "reaction-after",
+    "text": "Aquilegia: The Remnant              Roar of the fool…\n                                         Just after your Endurance\nType     Gambit                   Timing\n                                         drops to 1~4\n         Remove all Set dice from this skill to activate. You recover\nEffect\n         [3 + Set dice removed] Endurance.\n         The numerous wounds carved into your pride serve only to\nFlavor\n         strengthen your resolve toward victory."
+  },
+  {
+    "id": "win-no-matter-what",
+    "name": "Win, no matter what!!",
+    "group": "Columbine",
+    "page": 59,
+    "timing": "your-turn",
+    "text": "Win, no matter what!!           The Columbine's flower language is...\nType     Move / Attack           Timing Your Turn\n         You move 1~2 spaces, your choice. Then, roll a [5 + (spaces\nEffect   moved) dice Attack check] against 1 target. Afterward, you\n         take [2 + spaces moved] damage.\n         Even if your body breaks, you shall not yield this victory.\nFlavor\n         Deliver a killing blow at full speed."
+  },
+  {
+    "id": "system-aquilegia",
+    "name": "System: Aquilegia",
+    "group": "Columbine",
+    "page": 59,
+    "timing": "reaction-after",
+    "text": "System: Aquilegia         Even if this body scatters like petals…\n                                           Just after your Endurance\nType     Gambit                   Timing\n                                           hits 0\n         Remove all Set dice from this skill to activate. You\n         immediately recover 5 Endurance. Then, inflict [Set dice\nEffect\n         removed] damage on 1 target. This skill can only be used\n         once per Stellar Battle.\n         You refuse to lose here. You refuse to be scattered to the\nFlavor\n         wind. You pursue victory with insatiable resolve."
+  },
+  {
+    "id": "fortress-cosmos",
+    "name": "Fortress Cosmos",
+    "group": "Cosmos",
+    "page": 61,
+    "timing": "reaction-after",
+    "text": "★ Fortress Cosmos           The Bastion of Purity…\n                                           Just after dice are rolled for\nType     Gambit / Support         Timing\n                                           an Attack check\n         Increase the Defense of 1 target by [Round count] against\nEffect   this Attack check only. This skill can be used once per check,\n         and may be declared after seeing the check's result.\n         Without protecting those you must, harmony cannot exist.\nFlavor\n         Dancing cosmos flowers form a shield to protect your allies."
+  },
+  {
+    "id": "cosmos-order",
+    "name": "Cosmos Order",
+    "group": "Cosmos",
+    "page": 61,
+    "timing": "your-turn",
+    "text": "Cosmos Order        A World in Perfect Harmony…\nType     Attack / Gambit         Timing Your Turn\n         Roll a [3 dice Attack] against 1 target. If the Attack deals\nEffect   damage, the target must choose and remove 1 of their Set\n         dice.\n         You are law, you are order. Stand tall, take up your sword.\nFlavor\n         None can hinder your advance."
+  },
+  {
+    "id": "cosmos-over-the-pain",
+    "name": "Cosmos: Over the Pain",
+    "group": "Cosmos",
+    "page": 61,
+    "timing": "your-turn",
+    "text": "Cosmos: Over the Pain            The Sky Beyond Pain…\nType     Gambit / Support       Timing Your Turn\n         You lose [Round count] Endurance. Then, restore [3 + Round\nEffect   count] Endurance to all targets of your choice (excluding\n         yourself) in your Garden and adjacent Gardens.\n         What spills from your fingertips isn't blood. Blossoming\nFlavor\n         cosmos flowers take to the air, mending your allies' wounds."
+  },
+  {
+    "id": "around-the-cosmos",
+    "name": "Around the Cosmos",
+    "group": "Cosmos",
+    "page": 61,
+    "timing": "your-turn",
+    "text": "Around the Cosmos           Race Across the Universe…\nType     Move / Support          Timing Your Turn\n         All willing targets you choose may each move 1 space. Each\nEffect\n         character determines their own destination.\n         Your command guides your comrades, much like a conductor\nFlavor\n         leading an orchestra."
+  },
+  {
+    "id": "calystegia-sphere",
+    "name": "Calystegia Sphere",
+    "group": "Morning Glory",
+    "page": 63,
+    "timing": "reaction-before",
+    "text": "★ Calystegia Sphere            Dancing, Swirling Morning Glory Petals…\nType     Defense / Support       Timing Just before an Attack check\n         During the upcoming Attack, increase the Defense of all\nEffect   characters in your Garden and adjacent Gardens by [Round\n         count].\n         Morning Glories whirl around, deceiving foes and adorning\nFlavor\n         knights, a dazzling spectacle on the battlefield."
+  },
+  {
+    "id": "dance-in-the-calystegia",
+    "name": "Dance in the Calystegia",
+    "group": "Morning Glory",
+    "page": 63,
+    "timing": "your-turn",
+    "text": "Dance in the Calystegia            Bloom on the Battlefield…\nType     Attack / Gambit          Timing Your Turn\n         Roll a [(2 + Round count) dice Attack] against 1 target.\nEffect   Afterward, you recover [the # of characters in your Garden]\n         Endurance.\n         A Morning Glory's battle is never fought alone. On a more\nFlavor   tangled battlefield, the strength of others paints your petals\n         even brighter."
+  },
+  {
+    "id": "avandner",
+    "name": "Avandner",
+    "group": "Morning Glory",
+    "page": 63,
+    "timing": "your-turn",
+    "text": "Avandner      The Flower of Bonds, Dancing Across the Frontline…\nType     Attack / Move           Timing Your Turn\n         Roll a [1 dice Attack] against 1 target, then move yourself 1\nEffect   space. Afterward, roll another [1 dice Attack] against 1\n         target, and move yourself 1 space again.\nFlavor   Lightly, deftly, you dash across the battlefield."
+  },
+  {
+    "id": "system-calystegia",
+    "name": "System: Calystegia",
+    "group": "Morning Glory",
+    "page": 63,
+    "timing": "reaction-after",
+    "text": "System: Calystegia          To Share the Next Moment with You…\n                                          Just after your Endurance\nType     Gambit                    Timing\n                                          hits 0\n         Remove all Set dice from this skill to activate. You\n         immediately recover 5 Endurance, and restore [# of Set dice\nEffect\n         removed] Endurance to another character. This skill can be\n         used only once per Stellar Battle.\n         Driven by the unyielding will not to fall here, for another's\nFlavor\n         sake, your Stella Dress shines anew."
+  },
+  {
+    "id": "anemone-s-resolve",
+    "name": "Anemone's Resolve",
+    "group": "Anemone",
+    "page": 65,
+    "timing": "your-turn",
+    "text": "★ Anemone's Resolve             Light a Fire in Fading Hope…\nType     Attack                  Timing Your Turn\n         Roll a [(your location's Garden #) dice Attack] against 1\nEffect   target. Then, you take [half (rounded down) the damage\n         dealt by this Attack] damage.\n         You strike with a resolve to grant your wish, even if it means\nFlavor   defeating everyone else. An attack fueled by unwavering\n         determination."
+  },
+  {
+    "id": "wish-bringer",
+    "name": "Wish Bringer",
+    "group": "Anemone",
+    "page": 65,
+    "timing": "reaction-before",
+    "text": "Wish Bringer       Bearer of Hope…\nType     Gambit / Support           Timing Just before an Attack check\n         During the upcoming Attack, all characters' Defenses\nEffect\n         changes to [their location's Garden #].\n         All hopes are fleeting, but not gone. A flurry of petals covers\nFlavor   the battlefield, a skill that support and hinders both offense\n         and defense in equal measure."
+  },
+  {
+    "id": "phantom-pain",
+    "name": "Phantom Pain",
+    "group": "Anemone",
+    "page": 65,
+    "timing": "your-turn",
+    "text": "Phantom Pain        Small Aches and Pains…\nType     Move / Attack             Timing Your Turn\n         Move yourself 1 space. Then, roll a [1 + (the # of characters\nEffect\n         in your Garden) dice Attack] against 1 target.\n         A skill that lets you strengthen your attack with the help of\nFlavor   allies, or by harnessing your enemy’s power.\n           \"I am no longer alone.\""
+  },
+  {
+    "id": "anemone-dress",
+    "name": "Anemone Dress",
+    "group": "Anemone",
+    "page": 65,
+    "timing": "reaction-before",
+    "text": "Anemone Dress          Ephemeral Dreams, My Only Color…\nType     Defense / Support       Timing Just before an Attack check\n         During the upcoming Attack, increase 1 character’s Defense\nEffect   by [Round count]. This effect does not stack if used on the\n         same character multiple times.\n         You are adorned in an Anemone Dress. Its beauty becomes\nFlavor\n         your shield, protecting both you and your companions."
+  },
+  {
+    "id": "the-shores-of-victory-defeat",
+    "name": "The Shores of Victory & Defeat",
+    "group": "Spider Lily",
+    "page": 67,
+    "timing": "your-turn",
+    "text": "★ The Shores of Victory & Defeat\nType     Gambit / Support        Timing Your Turn\n         Choose one of the following effects:\n         \"Restore [Round count] Endurance to all characters in odd-\n         numbered Gardens, and deal [Round count] damage to all\nEffect   characters in even-numbered Gardens.\"\n         OR \"Restore [Round count] Endurance to all characters in\n         even-numbered Gardens, and deal [Round count] damage to\n         all characters in odd-numbered Gardens.\"\n         Victory and defeat, two sides of the same coin. Amid the\nFlavor\n         blooming Spider Lilies, to whom will they smile?"
+  },
+  {
+    "id": "the-near-far-shores",
+    "name": "The Near & Far Shores",
+    "group": "Spider Lily",
+    "page": 67,
+    "timing": "your-turn",
+    "text": "The Near & Far Shores\nType     Gambit / Support        Timing Your Turn\n         All characters in your Garden (including you) recover [2 +\n         Round count] Endurance. Then, deal [2 + Round count]\nEffect   damage to all characters located in the Garden directly\n         opposite yours. (Directly Opposite Gardens refer to\n         arrangements like Garden 1 & 4, or 2 & 5!)\n         If this place where Spider Lilies bloom is the near shore, then\nFlavor\n         let me scatter them wildly to the far shore as well."
+  },
+  {
+    "id": "poisoned-flower-of-grief",
+    "name": "Poisoned Flower of Grief",
+    "group": "Spider Lily",
+    "page": 67,
+    "timing": "reaction-after",
+    "text": "Poisoned Flower of Grief\n                                          Just after you take damage\nType     Gambit                   Timing\n                                          from an Attack check\n         When you take damage from an Attack, you deal the same\n         amount of damage back to the character who made the\nEffect\n         Attack check. (This skill cannot be used against Attack\n         checks made by the Stage itself.)\nFlavor   Let those who harm you taste your pain."
+  },
+  {
+    "id": "spider-lilies-beneath-the-moonlight",
+    "name": "Spider Lilies Beneath the Moonlight",
+    "group": "Spider Lily",
+    "page": 67,
+    "timing": "stage-reaction",
+    "text": "Spider Lilies Beneath the Moonlight\n                                   When a Stage's Action Routine\nType     Gambit          Timing\n                                   effect would activate\n         The Stage Action for this turn, as indicated by the Omen,\nEffect\n         does not occur. You take [5 + Round count] damage.\n         Spider Lilies bloom all around. The moon drifts overhead.\nFlavor\n         Your flower spreads, taking the stage."
+  },
+  {
+    "id": "amaranthus-room",
+    "name": "Amaranthus Room",
+    "group": "Amaranthus",
+    "page": 69,
+    "timing": "your-turn",
+    "text": "★ Amaranthus Room               The Room of Origins…\nType     Gambit                  Timing Your Turn\n         Select 2 numbers. For the remainder of this round, all rolled\n         dice results showing your 1st selected number are changed\nEffect\n         to the 2nd selected number. This effect applies to all\n         characters and the Stage.\n         Your Amaranthus overtakes part of the stage. You won't allow\nFlavor\n         others to do as they please."
+  },
+  {
+    "id": "betrayal-s-amaranthus",
+    "name": "Betrayal's Amaranthus",
+    "group": "Amaranthus",
+    "page": 69,
+    "timing": "your-turn",
+    "text": "Betrayal's Amaranthus             Betrayal's Unwithering Flower…\nType     Attack                  Timing Your Turn\n         Roll a [2 dice Attack] against yourself or a willing target. (If\nEffect   the Attack is not rolled, the following effect is negated.)\n         Afterward, roll a [5 dice Attack] against 1 other target.\nFlavor   A savage blade strikes, harming even your allies."
+  },
+  {
+    "id": "eternity-s-amaranthus",
+    "name": "Eternity's Amaranthus",
+    "group": "Amaranthus",
+    "page": 69,
+    "timing": "reaction-after",
+    "text": "Eternity's Amaranthus             Eternity's Unwithering Flower…\n                                            Just after your Endurance\nType     Gambit                   Timing\n                                            hits 0\n         Remove all Set dice from this skill to activate. You\nEffect   immediately recover [5 + Set dice removed] Endurance. This\n         skill can only be used once per Stellar Battle.\n         I have no intention of falling here. So, let us continue the\nFlavor\n         fight a little longer."
+  },
+  {
+    "id": "unlimited-libra",
+    "name": "Unlimited Libra",
+    "group": "Amaranthus",
+    "page": 69,
+    "timing": "reaction-after",
+    "text": "Unlimited Libra        The Library of Life…\n                                           Just after another character\nType     Gambit / Support         Timing\n                                           takes damage\n         The character who took damage immediately rolls a\nEffect   [(Round count) dice Charge check]. This skill can only be\n         used once per character per round.\n         A skill that shares your strength with the wounded. You will\nFlavor\n         carve the path for another's survival."
+  },
+  {
+    "id": "night-runner",
+    "name": "Night Runner",
+    "group": "Black",
+    "page": 71,
+    "timing": "your-turn",
+    "text": "★ Night Runner          Dash Through the Night…\nType     Move / Support         Timing Your Turn\n         You, and 1 willing target of your choice in your Garden,\nEffect\n         move together to another Garden within 1 space.\n         Blending into the shadows, you swiftly slip past everyone's\nFlavor\n         gaze. You might as well help an ally along the way."
+  },
+  {
+    "id": "midnight-vamp",
+    "name": "Midnight Vamp",
+    "group": "Black",
+    "page": 71,
+    "timing": "your-turn",
+    "text": "★ Midnight Vamp           Vampire of the dark…\nType     Attack                 Timing Your Turn\n         You recover 2 Endurance. Then, roll a [3 dice Attack]\nEffect\n         against 1 target.\n         Lurking in the darkness, you slice through foes like the\nFlavor\n         vampires of myth."
+  },
+  {
+    "id": "corrupt-touch",
+    "name": "Corrupt Touch",
+    "group": "Black",
+    "page": 71,
+    "timing": "your-turn",
+    "text": "Corrupt Touch        Corruption's black temptation…\nType     Attack / Gambit         Timing Your Turn\n         Move a target 1 space. Then, roll a [2 dice Attack] against\nEffect\n         them. Afterward, you recover [damage dealt] Endurance.\n         Like a monster out of a story, your attack drains an enemy's\nFlavor\n         vitality."
+  },
+  {
+    "id": "black-avenger",
+    "name": "Black Avenger",
+    "group": "Black",
+    "page": 71,
+    "timing": "reaction-after",
+    "text": "Black Avenger        Behold the black shadow at your back…\nType     Gambit / Attack         Timing Just after you take damage\n         Deal [the damage taken] damage to the character who\nEffect   inflicted it upon you. (This skill cannot be used against\n         Attacks made by the Stage itself.)\nFlavor   You took that attack on purpose."
+  },
+  {
+    "id": "black-flowers-zenith",
+    "name": "Black Flowers Zenith",
+    "group": "Black",
+    "page": 71,
+    "timing": "reaction-before",
+    "text": "Black Flowers Zenith           The pinnacle of black petals…\n                                          Just before someone else\nType     Gambit / Support        Timing\n                                          takes damage\n         Reduce the damage received by another character by half\nEffect\n         (rounded down).\n         A storm of black petals descends from the sky, confusing\nFlavor\n         enemy attacks and protecting your allies."
+  },
+  {
+    "id": "floral-ring",
+    "name": "Floral Ring",
+    "group": "Red",
+    "page": 73,
+    "timing": "your-turn",
+    "text": "★ Floral Ring       Scarlet Wreath of Scattered Embers…\nType     Gambit                  Timing Your Turn\n         Gain 1 \"Flame Counter.\" You can have multiple Counters.\nEffect   Flame Counter: Each time you take damage, you may deal 1\n         damage to the character damaging you.\n         Fiery crystals whirl around you, as if with a mind of their\nFlavor\n         own; ready to burn any who would do you harm."
+  },
+  {
+    "id": "red-flowers-gloria",
+    "name": "Red Flowers’ Gloria",
+    "group": "Red",
+    "page": 73,
+    "timing": "your-turn",
+    "text": "Red Flowers’ Gloria          Glory of the Red Flower…\nType     Attack / Gambit         Timing Your Turn\n         Roll a [3 dice Attack] against 1 target. During this Attack,\nEffect\n         their Defense is reduced by 1.\n         Red petals whirl in the air. None can stand in the way of your\nFlavor\n         assault."
+  },
+  {
+    "id": "burn-with-fire",
+    "name": "Burn with Fire",
+    "group": "Red",
+    "page": 73,
+    "timing": "your-turn",
+    "text": "Burn with Fire       Burn with Passion…\n Type    Attack                  Timing Your Turn\nEffect   Roll a [4 dice Attack] against 1 target.\nFlavor   Let your emotions ignite. Strike as your heart desires."
+  },
+  {
+    "id": "dance-with-heat",
+    "name": "Dance with Heat",
+    "group": "Red",
+    "page": 73,
+    "timing": "reaction-after",
+    "text": "Dance with Heat         Dance with Passion…\nType     Gambit                 Timing Just after someone moves\n         Deal [spaces moved] damage to the character who just\nEffect\n         moved.\n         Scorch their shoes and have them dance; covering the stage in\nFlavor\n         flames."
+  },
+  {
+    "id": "rewrite-your-story",
+    "name": "Rewrite Your Story",
+    "group": "Yellow",
+    "page": 75,
+    "timing": "reaction-before",
+    "text": "★ Rewrite Your Story              You Think That's Good Enough?…\nType     Gambit / Support       Timing Just before an Attack check\n         During the upcoming Attack check (including your own),\nEffect\n         reduce the Defense of 1 target by 1.\n         Your words or actions draw attention and create an opening;\nFlavor\n         and exploit that moment."
+  },
+  {
+    "id": "mind-over-matter",
+    "name": "Mind Over Matter",
+    "group": "Yellow",
+    "page": 75,
+    "timing": "your-turn",
+    "text": "Mind Over Matter           Will of the Yellow Flower…\nType     Gambit / Support         Timing Your turn\n         1 target rolls a [2 dice Charge check] and recovers 2\nEffect   Endurance. Then you take 2 damage. This skill can only be\n         used once per round on the same target.\n         A will so strong it manifests as petals; this skill helps others\nFlavor\n         act through sheer force of mind."
+  },
+  {
+    "id": "yellow-queen",
+    "name": "Yellow Queen",
+    "group": "Yellow",
+    "page": 75,
+    "timing": "your-turn",
+    "text": "Yellow Queen         The Queen in Yellow…\nType     Gambit / Defense        Timing Your turn\n         For the rest of this round, reduce the number of dice rolled\n         for any Attack check targeting any willing targets of your\nEffect\n         choice other than yourself within your Garden by 1. This\n         effect can stack up to [Round count] times.\n         No one acts without your leave in your domain. Petals of\nFlavor\n         yellow dance to protect those within."
+  },
+  {
+    "id": "yes-my-lady",
+    "name": "Yes, My Lady",
+    "group": "Yellow",
+    "page": 75,
+    "timing": "your-turn",
+    "text": "Yes, My Lady        Lady of the Battlefield…\nType     Move / Support         Timing Your turn\nEffect   Swap places with 1 willing target of your choice.\n         Stand back. —Yes, my lady.\nFlavor   Out of the way. —Yes, my lady.\n         Go. —Yes, my lady."
+  },
+  {
+    "id": "whirlpool-of-thought",
+    "name": "Whirlpool of Thought",
+    "group": "Blue",
+    "page": 77,
+    "timing": "reaction-after",
+    "text": "★ Whirlpool of Thought             Spinning Turning Whirling…\nType     Gambit                Timing Just after someone rolls dice\n         Choose 1 target; re-roll 1~2 of the dice they just rolled (you\nEffect   can use this effect on any dice roll; not just Attack or\n         Charge checks!).\n         A skill for aiding or hindering others through strategy and\nFlavor\n         positioning."
+  },
+  {
+    "id": "wind-signpost",
+    "name": "Wind Signpost",
+    "group": "Blue",
+    "page": 77,
+    "timing": "your-turn",
+    "text": "Wind Signpost         Guiding Winds…\nType     Gambit / Support        Timing Your turn\n         Place 1 willing target in your Garden. This does not count as\nEffect   movement (it does not interact with skills referencing the\n         number of spaces moved or the act of moving itself!).\n         The wind pushes your allies, guiding them to advantageous\nFlavor\n         ground."
+  },
+  {
+    "id": "deep-blue-blade",
+    "name": "Deep Blue Blade",
+    "group": "Blue",
+    "page": 77,
+    "timing": "your-turn",
+    "text": "Deep Blue Blade         Sword of the Deep Sea…\nType     Attack                   Timing Your turn\n         Roll a [2 dice Attack] against 1 target. Then, if you are in\nEffect\n         Garden 3, roll an additional [3 dice Attack].\n         A skill for striking from a position of advantage, born of\nFlavor\n         deeper cunning."
+  },
+  {
+    "id": "deep-contemplation",
+    "name": "Deep Contemplation",
+    "group": "Blue",
+    "page": 77,
+    "timing": "your-turn",
+    "text": "Deep Contemplation\nType     Gambit / Support         Timing Your turn\n         All willing targets of your choice each roll a [1 die Charge\n         check]. Then, if you are in Garden 1, all who rolled the\nEffect\n         Charge check recover [Round count] Endurance. This skill\n         can only be used once per round.\n         A flurry of blue petals sweeps through, granting your allies\nFlavor\n         even greater strength."
+  },
+  {
+    "id": "white-shield",
+    "name": "White Shield",
+    "group": "White",
+    "page": 79,
+    "timing": "reaction-before",
+    "text": "★ White Shield         Brilliant Shield…\nType     Defense / Support Timing Just before an Attack check\n         Restore 1 Endurance to a character targeted by an Attack,\nEffect\n         and increase their Defense by 1 for the upcoming Attack.\n         Shimmering white petals form a shield, protecting you from\nFlavor\n         harm."
+  },
+  {
+    "id": "anthem-of-eradication",
+    "name": "Anthem of Eradication",
+    "group": "White",
+    "page": 79,
+    "timing": "your-turn",
+    "text": "Anthem of Eradication\nType     Attack / Gambit       Timing Your turn\n         Roll a [3 dice Attack] against 1 target. If you deal damage,\nEffect\n         the target rolls 1 fewer die on their next Attack.\nFlavor   Before your sharp assault, none can escape annihilation."
+  },
+  {
+    "id": "lightning-intercept",
+    "name": "Lightning Intercept",
+    "group": "White",
+    "page": 79,
+    "timing": "reaction-before",
+    "text": "Lightning Intercept           Faster Than Light…\n                                         Just before an Attack check\nType     Gambit / Defense      Timing\n                                         against you\n         Deal [1 + Round count] damage to the character about to\nEffect   attack you. For the upcoming Attack check, increase your\n         Defense by [Round count].\n         A skill to strike faster than your foe; nothing surpasses the\nFlavor\n         speed of light."
+  },
+  {
+    "id": "flash-step",
+    "name": "Flash Step",
+    "group": "White",
+    "page": 79,
+    "timing": "your-turn",
+    "text": "Flash Step      White Streak Dash…\nType     Move                 Timing Your turn\nEffect   You move 2~3 spaces.\n         A skill to dash across the battlefield in an instant, as if you\nFlavor\n         were light itself."
+  },
+  {
+    "id": "nine-liverary",
+    "name": "Nine Liverary",
+    "group": "Purple",
+    "page": 81,
+    "timing": "your-turn",
+    "text": "★ Nine Liverary         Nine Towers Aligned in the Dark of Night…\nType     Gambit / Support Timing Your turn\n         All willing targets of your choice roll a [(Round count) dice\n         Charge check]. Afterward, those who rolled the Charge\nEffect\n         check each take [Round count] damage. This skill can only\n         be used once per round on the same character.\n         Purple towers line the stage; granting greater power, in\nFlavor\n         exchange for a price."
+  },
+  {
+    "id": "diaclock-the-purple",
+    "name": "Diaclock: The Purple",
+    "group": "Purple",
+    "page": 81,
+    "timing": "your-turn",
+    "text": "Diaclock: The Purple           The Colors of Past and Future…\nType     Gambit                 Timing Your turn\n         All willing targets of your choice may remove any amount of\nEffect   Set dice. Those who remove at least 1 die recover [3 + Set\n         dice removed] Endurance.\n         As if time itself has stopped, all movement on the stage\nFlavor   ceases. The swirling purple petals grant vitality at the cost of\n         each person’s time."
+  },
+  {
+    "id": "draco-grace-command",
+    "name": "Draco Grace Command",
+    "group": "Purple",
+    "page": 81,
+    "timing": "reaction-after",
+    "text": "Draco Grace Command               Command Both Stern and Elegant…\nType     Gambit              Timing Just after an Attack check\n         Choose 1 die from an Attack check made by any character\nEffect   and change it to any result. Then, you recover [6 - the new\n         result] Endurance.\n         Your poised, elegant command sometimes aids allies,\nFlavor   sometimes hinders foes; yet always serves your own\n         interests."
+  },
+  {
+    "id": "purple-flower-dial",
+    "name": "Purple Flower Dial",
+    "group": "Purple",
+    "page": 81,
+    "timing": "your-turn",
+    "text": "Purple Flower Dial\nType     Move / Support       Timing Your turn\n         All willing targets of your choice each move 1 space\nEffect   clockwise. Those who move this way each recover [Round\n         count] Endurance.\n         Like the hands of a clock turning forward, your orders control\nFlavor\n         the battlefield."
+  }
+]

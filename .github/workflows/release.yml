@@ -1,0 +1,33 @@
+name: Validate and release Foundry system
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
+      - name: Build installable package
+        run: npm run package
+      - name: Publish Foundry manifest and ZIP
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RELEASE_TAG="v$(node -p 'JSON.parse(require("fs").readFileSync("system.json", "utf8")).version')"
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME}" != "$RELEASE_TAG" ]; then
+            echo "Tag must match the version in system.json"
+            exit 1
+          fi
+          gh release create "$RELEASE_TAG" artifacts/system.json artifacts/stellaknights-v14.zip --target "$GITHUB_SHA" --title "Stella Knights $RELEASE_TAG for Foundry VTT v14" --notes-file RELEASE-NOTES.md --latest

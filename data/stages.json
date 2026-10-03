@@ -1,0 +1,190 @@
+[
+  {
+    "id": "ragnarok",
+    "name": "Heroes from the Age of Gods — Ragnarok Unbound",
+    "page": 208,
+    "setText": "Set Routines\n      Round 1 - Set Phase\n      Name     Invasion of Myth\n               Place 1 “War Marker” each in Garden 1 and Garden 4.\n               War Marker: While a character is in a Garden with this marker,\n      Effect\n               their Defense lowers by 1. This represents the area turning into a\n               chaotic melee of heroic phantoms.\n               A raging storm, thunder crashing, and the shadows of countless\n      Flavor\n               heroes appear.\n\n      Round 2 - Set Phase\n      Name     Mythic Archetype\n      Effect   The enemy recovers [1 die] Endurance.\n      Flavor   A hero possesses the enemy.\n\n      Round 3 - Set Phase\n  From round 3 onward, repeat the same Set routine as round 2.\n\n\n\n\n208",
+    "actions": [
+      {
+        "name": "Arm of Silver",
+        "text": "Name     Arm of Silver\n          When this effect is executed, roll a [5 dice Attack check] against\n          all Stellar Knights in the Enemy's same Garden. Afterward, roll a\n Effect\n          [5 dice Attack check] against all Stellar Knights in the Garden\n          directly opposite the Enemy's.\n          A silver light courses through the enemy’s right arm. The\n Flavor\n          legendary power of the Shining Arm is now unleashed."
+      },
+      {
+        "name": "Shining Sword",
+        "text": "Name     Shining Sword\n          When this effect is executed, roll a [5 dice Attack check] against\n Effect\n          all Stellar Knights in the Enemy's same & adjacent Gardens.\n          The enemy’s weapon glows brilliantly. Here, the legend of the\n Flavor\n          Shining Sword is reborn."
+      },
+      {
+        "name": "Unerring Spear",
+        "text": "Name     Unerring Spear\n          When this effect is executed, roll a [5 dice Attack check] against\n Effect\n          all Stellar Knights in Gardens 1, 3, and 5.\n          The legendary spear that never misses when thrown. A spear of\n Flavor\n          light is released from the enemy’s right arm."
+      },
+      {
+        "name": "The Three Goddesses",
+        "text": "Name     The Three Goddesses\n          The Enemy recovers 3 Endurance, then places 1 Set die on any\n Effect\n          skill and uses it immediately.\n          Three goddesses descend, bestowing various blessings upon the\n Flavor\n          enemy."
+      },
+      {
+        "name": "Goddess of War",
+        "text": "Name     Goddess of War\n          When this effect is executed, roll a [5 dice Attack check] against\n Effect\n          all Stellar Knights in Gardens 2, 3, and 6.\n          The war goddess descends by the enemy’s side. Her spear strikes\n Flavor\n          at the Stellar Knights."
+      }
+    ]
+  },
+  {
+    "id": "blade-dance",
+    "name": "Resplendent Blade Dance",
+    "page": 210,
+    "setText": "Set Routines\n       Round 1 - Set Phase\n       Name     Lo, was that a starving wolf’s distant howl\n                This effect executes at the start of Round 1’s Cut phase. Target\n                the Stellar Knight who is furthest from the Enemy's Garden (if\n       Effect\n                multiple are equally distant, the Director chooses 1). Roll a [(3 +\n                Round count) dice Attack check] against the target.\n                Across the wind-swept arena, the howl of a wolf echoes far away.\n      Flavor    As if threatening to devour cowards, it seems to be watching,\n                waiting.\n\n       Round 2 - Set Phase\n      From round 2 onward, repeat the same Set routine as round 1.\n\n\n\n\n210",
+    "actions": [
+      {
+        "name": "Now’s the Moment! Waterfowl Scatter in Alarm!",
+        "text": "Name     Now’s the Moment! Waterfowl Scatter in Alarm!\n          The enemy places 1 Set die on any skill and uses it immediately.\n Effect\n          During this action, the enemy rolls 2 extra dice on any Attack check.\n          Perhaps startled by a sudden gust, flocks of birds take flight with a\n Flavor   clamor. Amid their shadows, a deadly blade strikes at the Stellar\n          Knights!"
+      },
+      {
+        "name": "Let the Fallen Soldiers’ Regrets Become Blades",
+        "text": "Name     Let the Fallen Soldiers’ Regrets Become Blades\n          Place a Ghost Blade Marker in every Garden.\n Effect   Ghost Blade Marker: Whenever a Stellar Knight rolls a die that\n          matches their location's Garden #, they take [Round count] damage.\n          Countless swords are thrust into the battlefield. Suddenly, they\n Flavor\n          begin to dance, ready to devour anyone who lowers their guard."
+      },
+      {
+        "name": "Even the Wind Delights in This Duel!",
+        "text": "Name     Even the Wind Delights in This Duel!\n          Roll a [4 dice Attack check] against all Stellar Knights in Gardens\n Effect\n          1, 3, and 5.\n          Is it the countless exchange of swords, or does the wind itself thrill\n Flavor   at the duel? Whirling gusts turn into blades and lash out at the\n          Stellar Knights!"
+      },
+      {
+        "name": "I’d like to see you try, the Barehanded Sword Catch!!",
+        "text": "Name     I’d like to see you try, the Barehanded Sword Catch!!\n          The enemy and the closest Stellar Knight each roll 5 dice and total\n Effect   the results. The one with the lower total takes 5 damage. (For\n          extra excitement, you can alternate rolling the dice one at a time!)\n          Empowered by the stage, the enemy’s weapon grows massive and\n Flavor   razor-sharp. Can the Stellar Knight catch a strike at this blinding\n          speed?!"
+      },
+      {
+        "name": "What a Thrilling Duel!",
+        "text": "Name     What a Thrilling Duel!\n          The enemy places 1 Set die on any skill and uses it immediately.\n Effect\n          Then, the enemy recovers [1 die] Endurance.\n          The fierce clash between Stellar Knight and enemy continues; a\n Flavor\n          battle of life and death that, in the end, nourishes the enemy’s soul."
+      }
+    ]
+  },
+  {
+    "id": "deep-sea",
+    "name": "Deep Sea",
+    "page": 212,
+    "setText": "Set Routines\n       Round 1 - Set Phase\n       Name     Giant Shark Attack\n                Place a “Shark Marker” in Garden 1.\n                Shark Marker: Any Stellar Knight that enters the marked Garden\n       Effect\n                takes [1 + Round count] damage. Any still in this Garden when the\n                “Cut phase” occurs takes an additional [1 + Round count] damage.\n                A massive shark bursts from the sea, biting into the stage. One bite\n      Flavor\n                from those jaws would leave more than just a scratch.\n\n       Round 2 - Set Phase\n       Name     Giant Wave\n                All Stellar Knights move 1 space toward Garden 1. This movement\n       Effect   cannot be indirect. (For example, if you’re in Garden 2, you must\n                move toward Garden 1, not Garden 3.)\n      Flavor    A wave so large crashes in that it tilts the entire stage.\n\n       Round 3 - Set Phase\n      From round 3 onward, repeat the same Set routine as round 2.\n\n\n\n\n212",
+    "actions": [
+      {
+        "name": "Tentacle Assault",
+        "text": "Name     Tentacle Assault\n          When this effect is executed, roll a [5 dice Attack check] against all\n Effect\n          Stellar Knights in Gardens 2, 4, and 6.\n          Multiple tentacles rise from the sea, lashing out at the Stellar\n Flavor\n          Knights."
+      },
+      {
+        "name": "Flying Fish Barrage",
+        "text": "Name     Flying Fish Barrage\n          When this effect is executed, roll a [5 dice Attack check] against all\n Effect\n          Stellar Knights in Gardens 3, 4, and 5.\n          Countless flying fish leap from the waves, attacking the Stellar\n Flavor\n          Knights like bullets."
+      },
+      {
+        "name": "Sudden Torrent",
+        "text": "Name     Sudden Torrent\n          All Stellar Knights roll [1 die]. Those rolling 4+ remain in place.\n Effect\n          Those rolling 3 or lower move to Garden 1.\n          The tail strike of a massive whale creates a violent current. Can\n Flavor\n          you withstand the force as it sweeps across the stage?"
+      },
+      {
+        "name": "Sea Serpent Crush",
+        "text": "Name     Sea Serpent Crush\n          Roll an [8 dice Attack check] against the Stellar Knight with the\n          highest Endurance. Then, all other Stellar Knights in the target's\n Effect\n          same Garden take [1 + Round count] damage and move 1 space.\n          Each Stellar Knight chooses their own destination.\n          A towering sea serpent crashes down onto the stage from above.\n Flavor\n          Getting hit by something that massive would be devastating."
+      },
+      {
+        "name": "Tentacle Sweep",
+        "text": "Name     Tentacle Sweep\n          Roll a separate [2 dice Attack check] against each Stellar Knight.\n Effect   Any who takes even 1 point of damage moves 1 space clockwise\n          (for example, a damaged Knight in Garden 3 moves to Garden 4).\n          A giant octopus rises from the sea, its massive tentacles sweeping\n Flavor\n          across the stage."
+      }
+    ]
+  },
+  {
+    "id": "plushie",
+    "name": "Plushie Collection",
+    "page": 214,
+    "setText": "Set Routines\n       Round 1 - Set Phase\n       Name     Fluffy soft and puffy ♪\n       Effect   Until the end of this round, the Enemy’s Defense raises by 1.\n                The ground is plush and bouncy! ♪ A fluffy bed, with pillowy\n      Flavor\n                cushions all around. ♪ Huh? The footing’s unstable? Who cares?\n\n       Round 2 - Set Phase\n      Name      Piping Hot Pancakes ♪\n      Effect    All Stellar Knights take [their Garden's #] damage.\n      Flavor    Wait—piping hot pancakes are falling from the sky!?\n\n       Round 3 - Set Phase\n      From round 3 onward, repeat the same Set routine as round 2.\n\n\n\n\n214",
+    "actions": [
+      {
+        "name": "Bouncy Bunny ♪ (Spring-Loaded Neck)",
+        "text": "Name     Bouncy Bunny ♪ (Spring-Loaded Neck)\n          When this effect is executed, all Stellar Knights compare their Garden #s. Roll\n Effect\n          a [7 dice Attack check] against the Knight in the lowest numbered Garden.\n Flavor   Who should I play with today? The bunny plush tilts its head (baring its fangs)."
+      },
+      {
+        "name": "Fluffy Cat’s Big Jump (Fat Cat Press)",
+        "text": "Name     Fluffy Cat’s Big Jump (Fat Cat Press)\n          When this effect is executed, all Stellar Knights compare their Garden #s. Roll\n Effect\n          a [7 dice Attack check] against the Knight in the highest numbered Garden.\n Flavor   Boing! ♪ The big cat plush leaps up. Looks like it wants to play! ♪"
+      },
+      {
+        "name": "Mr. Bear’s Trial (Who’s Been Naughty?)",
+        "text": "Name     Mr. Bear’s Trial (Who’s Been Naughty?)\n          When the Omen is read, the Enemy rolls [1 die]. When this effect is\n          executed, roll a [5 dice Attack check] against all Stellar Knights in the\n Effect\n          Garden matching the rolled number. If no one is in that Garden, roll a [4\n          dice Attack check] against all Stellar Knights instead.\n          The giant teddy bear plush spins around in place. When it stops, it points to\n Flavor\n          a spot. Looks like you’re the naughty one today! ♪"
+      },
+      {
+        "name": "Mr. Bear’s Grand Trial (The Bear Trials Return)",
+        "text": "Name     Mr. Bear’s Grand Trial (The Bear Trials Return)\n          When the Omen is read, the Enemy rolls [1 die]. When this effect is\n          executed, roll a [6 dice Attack check] against all Stellar Knights in the\n Effect\n          Garden matching the rolled number. If no one is in that Garden, roll a [4\n          dice Attack check] against all Stellar Knights instead.\n          The giant teddy bear plush spins around in place. When it stops, it points to\n Flavor\n          a spot. The real culprit... is you!"
+      },
+      {
+        "name": "Mr. Bear’s Ultimate Trial (Bear Revolution)",
+        "text": "Name     Mr. Bear’s Ultimate Trial (Bear Revolution)\n          When the Omen is read, the Enemy rolls [1 die]. When this effect is\n          executed, roll a [7 dice Attack check] against all Stellar Knights in the\n Effect\n          Garden matching the rolled number. If no one is in that Garden, roll a [4\n          dice Attack check] against all Stellar Knights instead.\n          The giant teddy bear plush spins around in place. When it stops, it points to\n Flavor\n          a spot. That wasn't the source of the problem... You’re the one causing it!!!"
+      }
+    ]
+  },
+  {
+    "id": "robot",
+    "name": "My Giant Robot",
+    "page": 216,
+    "setText": "Set Routines\n       Round 1 - Set Phase\n       Name     Dramatic Boarding!\n                Until this Stellar Battle ends, the Enemy rolls 1 extra die on all\n       Effect   Attack checks. This only applies to Skill-based Attack checks, and\n                not those by the Stage's effects.\n                A giant robot suddenly appears at the Enemy's side. Now, the pilot\n      Flavor\n                and machine become one!\n\n       Round 2 - Set Phase\n       Name     Irregular\n                The Enemy recovers [1 die] Endurance, and then rolls a [1 die\n       Effect\n                Charge check].\n                A genius among thousands—no, tens of thousands—stands here.\n      Flavor\n                The Enemy truly dominates the battlefield.\n\n       Round 3 - Set Phase\n      From round 3 onward, repeat the same Set routine as round 2.\n\n\n\n\n216",
+    "actions": [
+      {
+        "name": "Slicing Light Blade",
+        "text": "Name     Slicing Light Blade\n          When this effect is executed, roll a [7 dice Attack check] against all\n Effect\n          Stellar Knights in the Enemy's same & directly opposite Gardens.\n          Countless particles of light swirl around the enemy. They converge,\n Flavor\n          and in a single radiant flash, streak across the stage!"
+      },
+      {
+        "name": "Burst, Radiant Shield!!",
+        "text": "Name     Burst, Radiant Shield!!\n          When this effect is executed, roll a [5 dice Attack check] against all\n Effect\n          Stellar Knights in the Enemy's same & adjacent Gardens.\n          The giant robot’s shield of light shatters, unleashing a powerful\n Flavor\n          explosion all around."
+      },
+      {
+        "name": "Wild Dancing Lights",
+        "text": "Name     Wild Dancing Lights\n Effect   Each Stellar Knight takes [their Garden's #] damage.\n          Cloaked in shimmering particles, the giant robot dashes wildly\n Flavor\n          across the battlefield, attacking the Stellar Knights!"
+      },
+      {
+        "name": "PILE... DRIVER!!!",
+        "text": "Name     PILE... DRIVER!!!\n          Roll an [8 dice Attach check] against the Stellar Knight with the\n Effect   highest Endurance. Afterwards, that Stellar Knight moves 1 space,\n          chosen by the Enemy.\n Flavor   A massive pile driver slams down into a Stellar Knight!"
+      },
+      {
+        "name": "Annihilation Mode",
+        "text": "Name     Annihilation Mode\n          The enemy places 1 Set die on any skill and uses it immediately.\n Effect   If an \"Attack check\" is rolled with this skill, add 1 extra die to the\n          roll.\n Flavor   The robot’s eyes glow a deep red..."
+      }
+    ]
+  },
+  {
+    "id": "midnight-ball",
+    "name": "The Midnight Ball",
+    "page": 218,
+    "setText": "Set Routines\n       Round 1 - Set Phase\n      Name      Resplendent, Lavish Ball\n      Effect    Until this round ends, the Action routine's \"Effect 1\" takes place.\n      Flavor    Lively music, cheerful chatter, light-footed dancing.\n\n       Round 2 - Set Phase\n       Name     Seductive, Massacre Ball\n       Effect   Until this round ends, the Action routine's \"Effect 2\" takes place.\n                Warped music, guests drawing rapiers, swirling with a sinister air,\n      Flavor\n                murderous intent baring its fangs.\n\n       Round 3 - Set Phase\n      From round 3 onward, alternate between Round 1 & 2's Set routines.\n\n\n\n\n218",
+    "actions": [
+      {
+        "name": "Whispered Conversation",
+        "text": "Name     Whispered Conversation\n          Effect 1: when this effect is executed, all Stellar Knights in Gardens\n          2, 4, and 6 recover 1 Endurance, and the Enemy recovers 4\n Effect   Endurance.\n          Effect 2: When this effect is executed, roll a [6 dice Attack check]\n          against all Stellar Knights in Gardens 2, 4, and 6.\n          Faceless guests approach the Stellar Knights, speaking softly. In\n Flavor\n          their hands, a (1: wine glass / 2: blood-soaked rapier)."
+      },
+      {
+        "name": "Lighthearted Dance",
+        "text": "Name     Lighthearted Dance\n          Effect 1: The Enemy recovers 1 Endurance, then places 1 Set die on\n          any skill and immediately uses it.\n Effect\n          Effect 2: When this effect is executed, roll a [5 dice Attack check]\n          against all Stellar Knights in Gardens 1, 3, and 5.\n          To the orchestra’s music, the faceless guests dance (1: joyfully / 2:\n Flavor\n          with steps stained in blood)."
+      },
+      {
+        "name": "The Prince & the Girl",
+        "text": "Name     The Prince & the Girl\n          Effect 1: The Stellar Knight with the lowest Endurance recovers 1\n          Endurance and moves to the same Garden as the Enemy.\n Effect   Effect 2: Roll a [9 dice Attack check] against the Stellar Knight\n          with the highest Endurance, then move that Stellar Knight to the\n          same Garden as the Enemy.\n          A (1: commoner girl / 2: Stellar Knight) is chosen by the prince\n Flavor\n          and invited to a (1: dance / 2: dance of death)."
+      }
+    ]
+  },
+  {
+    "id": "dragon",
+    "name": "Dragon God Extermination",
+    "page": 220,
+    "setText": "Set Routines\n      Round 1 - Set Phase\n      Name     The Great Dragon's Arrival\n               All Stellar Knights roll [1 die]. Those with rolls of 5+ nothing\n      Effect   happens. On a 4 or lower, the Knight is forcibly moved 1 space\n               toward Garden 1 and takes damage equal to the result they rolled.\n               Dark clouds gather as the dragon approaches from afar, like a\n      Flavor   coming storm. Its massive form rushes in at high speed, whipping\n               up a violent gale that threatens to sweep the Stellar Knights away!\n\n      Round 2 - Set Phase\n      Name     Dragon Knight\n               From this point forward, all Enemy Attack checks roll with 1\n      Effect\n               extra die.\n               The Enemy mounts the back of the great dragon. From here on, the\n      Flavor\n               attacks will only grow more fierce.\n\n      Round 3 - Set Phase\n  From round 3 onward, there is no Set routine.\n\n\n\n\n220",
+    "actions": [
+      {
+        "name": "Dragon's Breath",
+        "text": "Name     Dragon's Breath\n          When this effect is executed, roll a [7 dice Attack check] against all\n Effect\n          Stellar Knights in Gardens 1, and 4.\n          The great dragon unleashes a torrent of flame, scorching the stage\n Flavor\n          like a raging flood."
+      },
+      {
+        "name": "Lesser dragons appear",
+        "text": "Name     Lesser dragons appear\n          When this effect is executed, roll a [6 dice Attack check] against all\n Effect\n          Stellar Knights in Gardens 2, 4, and 6.\n          Countless draconic minions, kin of the great dragon, swoop in and\n Flavor\n          launch a relentless wave attack on the Stellar Knights."
+      },
+      {
+        "name": "Giant Tail Slam",
+        "text": "Name     Giant Tail Slam\n          When this effect is executed, roll a [7 dice Attack check] against\n Effect\n          all Stellar Knights in Gardens 3, and 6.\n          The great dragon soars high, then brings its massive tail crashing\n Flavor\n          down onto the stage."
+      },
+      {
+        "name": "Ominous Stillness",
+        "text": "Name     Ominous Stillness\n          The Enemy recovers 4 Endurance, then places 1 Set die on any\n Effect\n          skill and uses it immediately.\n          The great dragon is seemingly perched high above, gathering\n Flavor   strength. But don't let your guard down. The Enemy closes in on\n          the Stellar Knights in an instant!"
+      },
+      {
+        "name": "A flame that chars all black",
+        "text": "Name     A flame that chars all black\n          All Stellar Knights roll [1 die]. If the result is 3 or lower, nothing\n Effect   happens. If the result is 4+, that Stellar Knight takes [their result\n          +2] damage.\n          With a roar from the great dragon, all of its kin unleash their\n Flavor\n          powerful dragon breaths in unison."
+      }
+    ]
+  }
+]

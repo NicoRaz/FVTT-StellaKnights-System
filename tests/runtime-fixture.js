@@ -1,0 +1,50 @@
+import fs from 'node:fs';
+import {ID} from '../module/rules.js';
+import {loadCatalog,skillDocument,skills} from '../module/library.js';
+let serial=0;
+export class Collection extends Array {get(id){return this.find(x=>x.id===id);} }
+function setPath(o,key,value){const p=key.split('.');for(const k of p.slice(0,-1))o=o[k]??={};o[p.at(-1)]=structuredClone(value);}
+export class MockItem {
+ constructor(data){this.id=data._id??'i'+(++serial);this.name=data.name;this.type=data.type;this.system={charge:0,uses:{},timingKey:'your-turn',attackDice:0,move:0,...structuredClone(data.system)};}
+ async update(data){for(const [k,v]of Object.entries(data))setPath(this,k,v);return this;}
+}
+export class MockActor {
+ constructor(id,type='bringer',opts={}) {
+  this.id=id;this.name=id;this.type=type;this.visible=true;this.isOwner=true;
+  this.system={details:{crest:{color:'Black',flower:'Rose'},wishTier:1},hp:{value:16,max:16,min:0},defense:{value:3},charge:{value:3},exp:0,distortion:0,bouquet:50,bouquetSpent:0,garden:1,done:false,enemy:false,flames:0,atypia:false,blessings:{hp:0,charge:0,attack:0},modifiers:[],...opts};
+  this.items=new Collection();this.allowed=new Set(['gm',id]);
+ }
+ testUserPermission(user){return this.allowed.has(user.id);}
+ async update(data){for(const[k,v]of Object.entries(data))setPath(this,k,v);return this;}
+ async updateEmbeddedDocuments(type,updates){for(const data of updates){const i=this.items.get(data._id);await i.update(Object.fromEntries(Object.entries(data).filter(([k])=>k!=='_id')));}return updates;}
+ async deleteEmbeddedDocuments(type,ids){this.items=new Collection(...this.items.filter(i=>!ids.includes(i.id)));}
+ async createEmbeddedDocuments(type,data){const items=data.map(d=>new MockItem(d));items.forEach(i=>{i.parent=this;this.items.push(i);});return items;}
+}
+export async function setup() {
+ const settings=new Map([[ID+'.battle',{active:false,round:0,phase:'set',actors:[],maps:[],markers:[],charged:[]}]]);
+ globalThis.foundry={utils:{deepClone:structuredClone,randomID:()=>String(++serial)},applications:{api:{DialogV2:{wait:async config=>{
+  const match=config.content.match(/<option value="([^"]+)"/);return match?.[1]??null;
+ }}}}};
+ globalThis.game={actors:new Collection(),items:new Collection(),messages:new Collection(),users:new Collection(),
+  i18n:{localize:key=>key},settings:{get:(ns,key)=>structuredClone(settings.get(ns+'.'+key)),set:async(ns,key,v)=>{settings.set(ns+'.'+key,structuredClone(v));return v;}}};
+ const gm={id:'gm',name:'GM',isGM:true,active:true};game.user=gm;game.users.push(gm);
+ globalThis.ChatMessage={getSpeaker:({actor}={})=>({actor:actor?.id}),create:async data=>{
+  const message={id:'m'+(++serial),...structuredClone({...data,rolls:undefined}),rolls:data.rolls??[],getFlag(ns,key){return this.flags?.[ns]?.[key];},async update(changes){for(const[k,v]of Object.entries(changes)){if(k==='rolls')this.rolls=v;else setPath(this,k,v);}return this;}};
+  game.messages.push(message);return message;
+ }};
+ const queue=[];
+ globalThis.Roll=class {
+  constructor(formula){this.formula=formula;this.dice=[];}
+  async evaluate(){const n=Number(this.formula.match(/^\d+/)[0]),values=queue.shift()??Array(n).fill(4);if(values.length!==n)throw Error(`Rigged dice mismatch ${this.formula}: ${values}`);this.dice=[{results:values.map(result=>({result,active:true}))}];return this;}
+ };
+ globalThis.fetch=async url=>({ok:true,json:async()=>JSON.parse(fs.readFileSync(new URL('../'+url.replace('systems/stellaknights/',''),import.meta.url)))});
+ await loadCatalog();
+ const knight=new MockActor('knight'),ally=new MockActor('ally'),enemy=new MockActor('enemy','embraced');
+ game.actors.push(knight,ally,enemy);for(const a of game.actors){a.items=new Collection(...[skills[0],...skills.filter(s=>['Rose','Black'].includes(s.group)).slice(0,5)].map((r,i)=>new MockItem(skillDocument(r,i+1))));}
+ const actors=[enemy.id,knight.id,ally.id];
+ await game.settings.set(ID,'battle',{active:true,round:1,phase:'actions',actors,turn:1,stage:'ragnarok',omenIndex:0,omen:null,pending:null,charged:[],maps:[],markers:[],damage:{},decisive:[],supported:[]});
+ return {gm,knight,ally,enemy,rig:values=>queue.push(values),settings};
+}
+export function user(id){return {id,isGM:false,active:true,name:id};}
+export function flags(message){return message.getFlag(ID,'check');}
+export const getState=()=>game.settings.get(ID,'battle');

@@ -1,0 +1,71 @@
+{
+  "id": "stellaknights",
+  "title": "Silver Sword of Stella Knights — v14",
+  "description": "Bringer/Sheath sheets, skill library, six-garden arena, Bouquet support, Distortion and Stellar Battles. Based on ksx0330/FVTT-StellaKnights-System.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14",
+    "maximum": "14"
+  },
+  "authors": [
+    {
+      "name": "ltaeng / ksx0330",
+      "url": "https://github.com/ksx0330/FVTT-StellaKnights-System"
+    },
+    {
+      "name": "v14 adaptation"
+    }
+  ],
+  "esmodules": [
+    "module/init.js"
+  ],
+  "styles": [
+    "styles/stella.css",
+    "styles/v14.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "th",
+      "name": "ไทย",
+      "path": "lang/th.json"
+    },
+    {
+      "lang": "ko",
+      "name": "한국어",
+      "path": "lang/ko.json"
+    },
+    {
+      "lang": "ja",
+      "name": "日本語",
+      "path": "lang/ja.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "bringer": {},
+      "sheath": {},
+      "embraced": {},
+      "eclipsed": {}
+    },
+    "Item": {
+      "ability": {}
+    }
+  },
+  "socket": true,
+  "packs": [],
+  "primaryTokenAttribute": "hp",
+  "grid": {
+    "distance": 1,
+    "units": "Garden"
+  },
+  "license": "LICENSE.txt",
+  "url": "https://github.com/NicoRaz/FVTT-StellaKnights-System",
+  "manifest": "https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/latest/download/system.json",
+  "download": "https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/download/v1.0.0/stellaknights-v14.zip"
+}

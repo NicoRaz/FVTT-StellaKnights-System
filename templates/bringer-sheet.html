@@ -1,0 +1,55 @@
+<div class="stella-content">
+  <div class="title-header">{{actor.type}} <span class="state">{{status}}</span><button type="button" data-action="battle">{{localize "Stella.Battle"}}</button><button type="button" data-action="bouquet">Bouquet</button></div>
+  <header class="sheet-header">
+    <img class="profile-img" src="{{actor.img}}" alt="{{actor.name}}" width="112" height="112">
+    <div class="header-fields"><input class="charname" name="name" value="{{actor.name}}" aria-label="Name">
+      <label>Portrait URL<input name="img" value="{{actor.img}}"></label>
+      {{#if fighter}}<div class="stella-stats">
+        <label>{{localize "Stella.Hp"}}<input type="number" name="system.hp.value" min="0" value="{{system.hp.value}}"></label>
+        <label>{{localize "Stella.Initial"}}<input type="number" name="system.hp.max" min="0" value="{{system.hp.max}}"></label>
+        <label>{{localize "Stella.Defense"}} ({{derivedDefense}})<input type="number" name="system.defense.value" min="1" max="6" value="{{system.defense.value}}"></label>
+        <label>{{localize "Stella.Charge"}}<input type="number" name="system.charge.value" min="0" value="{{system.charge.value}}"></label>
+        <label>{{localize "Stella.Garden"}}<input type="number" name="system.garden" min="1" max="6" value="{{system.garden}}"></label>
+        <label>Bouquet<input type="number" name="system.bouquet" min="0" value="{{system.bouquet}}"></label>
+        <label>{{localize "Stella.Exp"}}<input type="number" name="system.exp" min="0" value="{{system.exp}}"></label>
+        <label>{{localize "Stella.Distortion"}}<input type="number" name="system.distortion" min="0" max="3" value="{{system.distortion}}"></label>
+      </div>{{/if}}
+    </div>
+  </header>
+  <details open><summary>{{localize "Stella.Basic"}}</summary>
+    <div class="stella-fields">
+      <label>{{localize "Stella.Age"}}<input name="system.details.age" value="{{system.details.age}}"></label>
+      <label>{{localize "Stella.Sex"}}<input name="system.details.sex" value="{{system.details.sex}}"></label>
+      <label>{{localize "Stella.Career"}}<input name="system.details.career" value="{{system.details.career}}"></label>
+      <label>{{localize "Stella.Partner"}}<select name="system.details.partner">{{selectOptions partners selected=system.details.partner valueAttr="id" labelAttr="name" blank="—"}}</select>{{#if fighter}}<button type="button" data-action="pair">Sync Pair (GM)</button>{{/if}}</label>
+      <label>{{localize "Stella.Crest"}}<select name="system.details.crest.color">{{selectOptions colors selected=system.details.crest.color}}</select></label>
+      <label>{{localize "Stella.CrestAnd"}}<select name="system.details.crest.flower">{{selectOptions flowers selected=system.details.crest.flower}}</select></label>
+      <label>{{localize "Stella.Story"}}<input name="system.details.story" value="{{system.details.story}}"></label>
+      <label>{{localize "Stella.Hope"}} / {{localize "Stella.Despair"}}<select name="system.details.karma.type">{{selectOptions karmaChoices selected=system.details.karma.type}}</select><input name="system.details.karma.detail" value="{{system.details.karma.detail}}"></label>
+      <label>{{localize "Stella.Wish"}}<input name="system.details.wish" value="{{system.details.wish}}"></label>
+      <label>{{localize "Stella.Tier"}} · {{medalsRequired}} medals<input type="number" name="system.details.wishTier" min="1" max="10" value="{{system.details.wishTier}}"></label>
+      <label>{{localize "Stella.Personality"}}<input name="system.details.personality.first" value="{{system.details.personality.first}}"></label>
+      <label>{{localize "Stella.PersonalityAnd"}}<input name="system.details.personality.second" value="{{system.details.personality.second}}"></label>
+      <label>{{localize "Stella.Keyword"}}<input name="system.details.keyword" value="{{system.details.keyword}}"></label>
+      <label>{{localize "Stella.Weapon"}}<input name="system.details.weapon" value="{{system.details.weapon}}"></label>
+      <label>{{localize "Stella.Dress"}}<input name="system.details.dress" value="{{system.details.dress}}"></label>
+      <label>{{localize "Stella.Scars"}}<input name="system.details.scars" value="{{system.details.scars}}"></label>
+    </div>
+    <label>{{localize "Stella.Biography"}}<textarea name="system.details.biography" rows="4">{{system.details.biography}}</textarea></label>
+  </details>
+  {{#if fighter}}
+    <div class="stella-toolbar"><button type="button" data-action="setup">{{localize "Stella.Setup"}}</button><button type="button" data-action="charge">{{localize "Stella.RollCharge"}}</button>{{#unless enemy}}<button type="button" data-action="life">Immortal Life</button><button type="button" data-action="atypia">Atypia</button>{{/unless}}<button type="button" data-action="flame">Flame ({{system.flames}})</button><label class="stella-inline"><input type="checkbox" name="system.reportReroll" {{checked system.reportReroll}}>Session report re-roll</label></div>
+    <div class="set-ability">
+      {{#each slots}}
+      <article class="ability item" data-item-id="{{item.id}}">
+        <div class="title"><b>No. {{number}}</b> {{#if item}}{{item.name}}{{else}}{{localize "Stella.NotFound"}}{{/if}}</div>
+        {{#if item}}<div class="stella-toolbar"><button type="button" data-action="minus" data-item="{{item.id}}">−</button><strong class="charge-count">{{item.system.charge}}</strong><button type="button" data-action="plus" data-item="{{item.id}}">+</button><button type="button" data-action="use" data-item="{{item.id}}">{{localize "Stella.Use"}}</button></div>
+        <p>{{item.system.type}} · {{item.system.timing}} · p.{{item.system.page}}</p>
+        <pre>{{item.system.effect}}</pre><button type="button" data-action="echo" data-item="{{item.id}}">Chat</button><button type="button" data-action="edit" data-item="{{item.id}}">{{localize "Stella.Edit"}}</button>{{/if}}
+      </article>{{/each}}
+    </div>
+    <details><summary>{{localize "Stella.Ability"}} / {{localize "Stella.Custom"}}</summary><button type="button" data-action="new">{{localize "Stella.NewAbility"}}</button>
+      {{#each items}}<div class="item stella-item-row" data-item-id="{{id}}"><span>{{name}} · No.{{system.number}}</span><button type="button" data-action="edit" data-item="{{id}}">{{localize "Stella.Edit"}}</button><button type="button" data-action="delete" data-item="{{id}}">{{localize "Stella.Delete"}}</button></div>{{/each}}
+    </details>
+  {{/if}}
+</div>
