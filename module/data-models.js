@@ -12,8 +12,8 @@ function details() {
 }
 export class FighterData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return {details: details(), hp: schema({value: num(16), min: num(), max: num(16)}),
-      defense: schema({value: num(3, 1, 6), min: num(1, 1, 6)}), charge: schema({value: num(3), min: num()}),
+    return {details: details(), hp: schema({value: num(), min: num(), max: num()}),
+      defense: schema({value: num(1, 1, 6), min: num(1, 1, 6)}), charge: schema({value: num(), min: num()}),
       exp: num(), distortion: num(0, 0, 3), bouquet: num(), bouquetSpent: num(), garden: num(1, 1, 6),
       enemy: bool(), done: bool(), atypia: bool(), reportReroll: bool(), flames: num(), blessings: schema({hp: num(), charge: num(), attack: num()}),
       modifiers: new f.ArrayField(new f.ObjectField(), {initial: []})};
@@ -31,7 +31,14 @@ export class SheathData extends foundry.abstract.TypeDataModel {
 export class AbilityData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {type: str(), class: str(), timing: str("Your Turn"), word: str(), effect: str(),
-      charge: num(), number: num(0, 0, 6), key: str(), page: num(), timingKey: str("your-turn"),
+      charge: num(), number: num(0, 0, 6), key: str(), parentType: str(), parentKey: str(), page: num(), timingKey: str("your-turn"),
       attackDice: num(0, 0, 99), move: num(0, 0, 6), uses: new f.ObjectField({initial: {}})};
+  }
+}
+
+export class CrestData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {key:str(),description:str(),stats:schema({hp:num(),defense:num(0,0,6),charge:num()}),
+      skillKeys:new f.ArrayField(str(),{initial:[]})};
   }
 }

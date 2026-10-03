@@ -54,7 +54,9 @@
       "eclipsed": {}
     },
     "Item": {
-      "ability": {}
+      "ability": {},
+      "flower": {},
+      "color": {}
     }
   },
   "socket": true,

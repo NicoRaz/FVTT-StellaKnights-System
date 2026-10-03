@@ -2,11 +2,12 @@ import {ID,isFighter,isEnemy,escapeHTML as esc} from "./rules.js";
 import {state,formDialog,pick,t,notifyError,currentActors,chat,rollDice} from "./helpers.js";
 import {stages} from "./library.js";
 import {request} from "./socket.js";
-import {effectiveDefense} from "./engine.js";
+import {stellarCombat} from "./combat-state.js";
+import {effectiveDefense,effectiveCharge} from "./engine.js";
 import {session} from "./session.js";
 export class BattlePanel extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.ApplicationV2) {
   static DEFAULT_OPTIONS={id:"stella-battle",classes:["stella-v14"],window:{title:"Stellar Battle — Arena of Wishes"},position:{width:820,height:790},
-    actions:{start:BattlePanel.start,advance:BattlePanel.advance,open:BattlePanel.open,up:BattlePanel.order,down:BattlePanel.order,
+    actions:{garden:BattlePanel.garden,start:BattlePanel.start,advance:BattlePanel.advance,open:BattlePanel.open,up:BattlePanel.order,down:BattlePanel.order,
       charge:BattlePanel.charge,award:BattlePanel.award,import:BattlePanel.import,prompt:BattlePanel.prompt,end:BattlePanel.end,
       sessionStart:BattlePanel.sessionStart,sessionNext:BattlePanel.sessionNext,reference:BattlePanel.reference}};
   static PARTS={main:{template:`systems/${ID}/templates/battle-panel.html`}};
@@ -18,7 +19,7 @@ export class BattlePanel extends foundry.applications.api.HandlebarsApplicationM
     // Hexagonal ring in a 3x3 visual; blank corner cells added by the template.
     const narrative=session(),pair=game.actors.get(narrative.pairs[narrative.cursor]);
     return {s,session:narrative,pair:pair?.name,gm:game.user.isGM,stage:stages.find(x=>x.id===s.stage),active:active?.name,gardens,
-      actors:actors.map(a=>({id:a.id,name:a.name,garden:a.system.garden,hp:a.system.hp.value,defense:effectiveDefense(a),
+      actors:actors.map(a=>({id:a.id,name:a.name,garden:a.system.garden,hp:a.system.hp.value,defense:effectiveDefense(a),charge:effectiveCharge(a),
         done:a.system.done,charged:s.charged?.includes(a.id),owner:a.isOwner,enemy:isEnemy(a)})),
       pending:s.pending,omen:s.omen?stages.find(x=>x.id===s.stage)?.actions[s.omen.index]:null};
   }
@@ -31,7 +32,10 @@ export class BattlePanel extends foundry.applications.api.HandlebarsApplicationM
       if(data)await request("start",data);
     }catch(e){notifyError(e);}
   }
-  static async advance() {try{await request("advance");}catch(e){notifyError(e);}}
+  static async advance() {try{await stellarCombat()?.nextTurn();}catch(e){notifyError(e);}}
+  static async garden(_event,target) {
+    try {const a=game.actors.get(target.dataset.actor);const data=await formDialog('Garden',`<label>${esc(a.name)}<input type="number" name="garden" min="1" max="6" value="${a.system.garden}"></label>`,form=>({actor:a.id,field:'garden',value:Number(form.elements.garden.value)}));if(data)await request('adjust',data);}catch(e){notifyError(e);}
+  }
   static async open(_event,target) {game.actors.get(target.dataset.actor)?.sheet.render(true);}
   static async order(_event,target) {try{await request("reorder",{actor:target.dataset.actor,delta:target.dataset.action==="up"?-1:1});}catch(e){notifyError(e);}}
   static async charge(_event,target) {try{await request("charge",{actor:target.dataset.actor});}catch(e){notifyError(e);}}
@@ -50,7 +54,7 @@ export class BattlePanel extends foundry.applications.api.HandlebarsApplicationM
       await chat(ref.name,`<p>Dice: ${values.join(", ")} · printed pp.${ref.pages.join(", ")}. Use the row/column or grouped ranges shown in the table.</p><pre>${esc(ref.text)}</pre>`);
     }catch(e){notifyError(e);}
   }
-  static async end() {try{if(await foundry.applications.api.DialogV2.confirm({window:{title:"End battle"},content:"<p>End this battle and clear its pending check? No medals are awarded.</p>"}))await request("end");}catch(e){notifyError(e);}}
+  static async end() {try{await stellarCombat()?.endCombat();}catch(e){notifyError(e);}}
   static async award() {
     try {
       const choices=currentActors().filter(a=>!isEnemy(a));

@@ -102,7 +102,9 @@
   },
   "Item": {
     "types": [
-      "ability"
+      "ability",
+      "flower",
+      "color"
     ],
     "ability": {
       "type": "",
@@ -111,7 +113,29 @@
       "word": "",
       "effect": "",
       "charge": 0,
-      "number": 0
+      "number": 0,
+      "parentType": "",
+      "parentKey": ""
+    },
+    "flower": {
+      "key": "",
+      "description": "",
+      "stats": {
+        "hp": 0,
+        "defense": 0,
+        "charge": 0
+      },
+      "skillKeys": []
+    },
+    "color": {
+      "key": "",
+      "description": "",
+      "stats": {
+        "hp": 0,
+        "defense": 0,
+        "charge": 0
+      },
+      "skillKeys": []
     }
   }
 }

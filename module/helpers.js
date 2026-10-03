@@ -1,8 +1,8 @@
 import {ID, escapeHTML as esc} from "./rules.js";
 export const t = key => game.i18n.localize(`Stella.${key}`);
 export const notifyError = error => ui.notifications.error(error.message ?? String(error));
-export const state = () => foundry.utils.deepClone(game.settings.get(ID, "battle"));
-export const saveState = s => game.settings.set(ID, "battle", s);
+export {battleState as state,persistBattle as saveState} from "./combat-state.js";
+import {battleState as state} from "./combat-state.js";
 export const byId = id => {const a = game.actors.get(id); if (!a) throw Error("Actor not found"); return a;};
 export const owner = (a, user) => {if (!user?.isGM && !a.testUserPermission(user, "OWNER")) throw Error("You do not own this character"); return a;};
 export const gmOnly = user => {if (!user?.isGM) throw Error("GM only");};

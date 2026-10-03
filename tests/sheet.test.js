@@ -2,15 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {slotUpdates} from '../module/loadout.js';
 class Base {async _prepareContext(){return {};}async _renderHTML(){return 'html';}_onRender(){} async render(){this.renders=(this.renders??0)+1;}}
-globalThis.foundry={applications:{api:{HandlebarsApplicationMixin:B=>B},sheets:{ActorSheetV2:Base,ItemSheetV2:Base},apps:{FilePicker:{implementation:class {constructor(options){globalThis.picker=options;}browse(){globalThis.browsed=true;}}}}}};
+globalThis.foundry={utils:{deepClone:structuredClone},applications:{api:{HandlebarsApplicationMixin:B=>B},sheets:{ActorSheetV2:Base,ItemSheetV2:Base},apps:{FilePicker:{implementation:class {constructor(options){globalThis.picker=options;}browse(){globalThis.browsed=true;}}}}}};
 let active=false;
-globalThis.game={user:{isGM:true},settings:{get:()=>({active})},modules:new Map()};
+globalThis.game={i18n:{localize:key=>key},user:{isGM:true},settings:{get:()=>({active})},modules:new Map()};
 globalThis.ui={notifications:{error:message=>{throw Error(message);}}};
 const {StellaActorSheet}=await import('../module/actor-sheet.js');
 const {StellaItemSheet}=await import('../module/item-sheet.js');
 function fixture(){
   active=false;
-  const items=[{id:'basic',type:'ability',system:{key:'knights-etiquette',number:1,charge:2}}, {id:'a',type:'ability',system:{key:'rose',number:2,charge:1}}, {id:'b',type:'ability',system:{key:'blue',number:3,charge:0}}];
+  const items=[{id:'basic',type:'ability',system:{key:'knights-etiquette',number:1,charge:2}}, {id:'a',type:'ability',system:{key:'rose',number:2,charge:1}}, {id:'b',type:'ability',system:{key:'blue',number:3,charge:0}}, {id:'color',type:'color',system:{key:'Black',skillKeys:['rose','blue','new'],stats:{hp:16,defense:3,charge:3}}}];
   items.get=id=>items.find(i=>i.id===id);
   const actor={items,created:0,updates:[],async createEmbeddedDocuments(_type,docs){return docs.map(data=>{const i={...data,id:'copy'+(++this.created),parent:this};items.push(i);return i;});},async updateEmbeddedDocuments(_type,updates){this.updates.push(...updates);for(const u of updates)items.get(u._id).system.number=u['system.number'];}};
   for(const item of items){item.parent=actor;item.isOwner=true;}
@@ -31,14 +31,15 @@ test('External Skill drop copies once; repeated catalog drop reuses the owned It
 });
 test('Invalid, unreadable, Play-mode, read-only and in-battle drops do not create Items',async()=>{
   const {sheet,actor}=fixture();const source={id:'world',type:'ability',isOwner:true,system:{key:'new',number:0}};
-  await assert.rejects(sheet.dropSkill(source,1),/Knight/);
+  await assert.rejects(sheet.dropSkill({...source,system:{key:'foreign',number:0}},1),/not granted/);
   await assert.rejects(sheet.dropSkill({...source,isOwner:false,testUserPermission:()=>false},2),/cannot read/);
   sheet.editMode=false;await assert.rejects(sheet.dropSkill(source,2),/Edit/);sheet.editMode=true;
   sheet.isEditable=false;await assert.rejects(sheet.dropSkill(source,2),/Edit/);sheet.isEditable=true;
   active=true;await assert.rejects(sheet.dropSkill(source,2),/battle/);assert.equal(actor.created,0);
 });
-test('Basic slot cannot be moved; a reserve Skill replaces an occupied slot and sends the old Skill to reserve',()=>{
-  const {items}=fixture();assert.throws(()=>slotUpdates(items,items.get('basic'),0),/slot 1/);
+test('Knight’s Etiquette can move to reserve or swap any slot; a reserve Skill displaces to reserve',()=>{
+  const {items}=fixture();assert.deepEqual(slotUpdates(items,items.get('basic'),0),[{_id:'basic','system.number':0}]);
+  assert.deepEqual(slotUpdates(items,items.get('basic'),2),[{_id:'basic','system.number':2},{_id:'a','system.number':1}]);
   assert.throws(()=>slotUpdates(items,items.get('a'),7),/0.*6/);
   assert.deepEqual(slotUpdates(items,{id:'reserve',system:{number:0}},2),[{_id:'reserve','system.number':2},{_id:'a','system.number':0}]);
 });
@@ -63,4 +64,13 @@ test('Sheet rerenders restore scroll and preserve collapsed sections while Play 
   assert.equal(root.scrollTop,550);detail.toggle();assert.equal(sheet.sections.loadout,false);
   assert.equal(inputs[0].disabled,true);assert.equal(inputs[1].disabled,false);
   await StellaActorSheet.mode.call(sheet);assert.equal(sheet.editMode,true);assert.equal(sheet.renders,1);
+});
+
+test('Knight’s Etiquette can be dragged out of slot 1 and deleted through the sheet action',async()=>{
+  const {sheet,items}=fixture();await sheet.dropSkill(items.get('basic'),2);
+  assert.equal(items.get('basic').system.number,2);assert.equal(items.get('a').system.number,1);
+  await sheet.dropSkill(items.get('basic'),0);assert.equal(items.get('basic').system.number,0);
+  items.get('basic').system.number=1;let deleted=false;items.get('basic').delete=async()=>{deleted=true;};
+  foundry.applications.api.DialogV2={confirm:async()=>true};
+  await StellaActorSheet.remove.call(sheet,null,{dataset:{item:'basic'}});assert.equal(deleted,true);
 });

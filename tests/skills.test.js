@@ -7,6 +7,8 @@ import {ID} from '../module/rules.js';
 test('Every catalog skill can consume its Set dice and complete its declared effects',async()=>{
  for(let index=0;index<54;index++){
   const {knight,ally,enemy,gm}=await setup(),record=skills[index],key=record.id;
+  // Grant this Skill through a custom Parent to isolate its effect workflow.
+  knight.items.find(i=>i.type==="color").system.skillKeys.push(key);
   knight.system.hp.value=100;ally.system.hp.value=100;enemy.system.hp.value=100;
   const item=new MockItem(skillDocument(record,6));item.system.charge=2;knight.items.push(item);
   const data={actor:knight.id,item:item.id,targets:[enemy.id],path:[],path2:[],choice:'move-first',garden:3,from:1,to:6,index:0,indices:[0],sacrifice:knight.id,secondary:enemy.id};

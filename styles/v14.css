@@ -28,3 +28,5 @@
 .stella-v14 .token-img{object-fit:contain;border:1px solid var(--stella-line);border-radius:50%}
 .stella-v14 .mode-edit [draggable=true]{cursor:grab}
 .stella-v14 .mode-edit [data-slot]{outline:1px dashed var(--stella-line);outline-offset:3px}
+.stella-v14 .stella-stat{display:block;min-height:30px;padding:4px 7px;font-size:20px;font-weight:700}
+.stella-v14 .stella-crest{border:1px dashed var(--stella-line);border-radius:8px;padding:12px;margin:8px 0}

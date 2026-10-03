@@ -1,5 +1,5 @@
 import {ID,isFighter,isEnemy,escapeHTML as esc} from "./rules.js";
-import {gmOnly,byId,chat,t,state} from "./helpers.js";
+import {gmOnly,byId,chat,t,state,saveState} from "./helpers.js";
 export const session=()=>game.settings.get(ID,"session")??{active:false,phase:"prologue",pairs:[],cursor:0};
 const save=s=>game.settings.set(ID,"session",s);
 const phases=["prologue","chapter-one","chapter-two","interlude","final-chapter","curtain-call","cleanup"];
@@ -19,7 +19,7 @@ export async function sessionAction(op,data,user) {
     const pairs=[...new Set(data.actors)].map(byId);
     if(!pairs.length||pairs.some(a=>!isFighter(a)||a.type==="embraced"))throw Error("Choose Bringers (and Eclipsed for Irregular play)");
     for(const a of pairs)if(!a.system.details.partner||byId(a.system.details.partner).type!=="sheath")throw Error(`${a.name}: link a Sheath first`);
-    const battle=state();battle.outcome=null;await game.settings.set(ID,"battle",battle);
+    const battle=state();battle.outcome=null;await saveState(battle);
     await save({active:true,phase:"prologue",pairs:pairs.map(a=>a.id),cursor:0});
   } else if(op==="session-next") {
     const s=session();if(!s.active)throw Error("No active session");

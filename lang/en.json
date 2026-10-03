@@ -75,14 +75,15 @@
   "Stella.Custom": "Custom Skill",
   "Stella.Support": "Support",
   "Stella.Opponent": "Opponent",
-  "Stella.LoadoutHelp": "Slot 1 is Knight’s Etiquette. Choose five different skills from your Flower and Color.",
+  "Stella.LoadoutHelp": "Choose Flower and Color Items, then six different Skill Items. Knight’s Etiquette is optional and can use any slot.",
   "TYPES.Actor.bringer": "Bringer",
   "TYPES.Actor.sheath": "Sheath",
   "TYPES.Actor.embraced": "Embraced",
   "TYPES.Actor.eclipsed": "Eclipsed",
   "TYPES.Item.ability": "Skill",
   "Stella.InitialHelp": "Endurance at character creation, before Stage bonuses. Healing may exceed this value.",
-  "Stella.BaseDefense": "Base Defense",
   "Stella.EffectiveDefense": "Effective",
-  "Stella.DefenseHelp": "Base Defense is editable. Effective Defense includes current effects and is used against attacks."
+  "Stella.DefenseHelp": "Current Defense after effects, used against attacks.",
+  "TYPES.Item.flower": "Flower",
+  "TYPES.Item.color": "Color"
 }

@@ -19,22 +19,28 @@ https://github.com/NicoRaz/FVTT-StellaKnights-System/releases/latest/download/sy
 
 Repository สำหรับ v14: [https://github.com/NicoRaz/FVTT-StellaKnights-System](https://github.com/NicoRaz/FVTT-StellaKnights-System) มี manifest และ ZIP ใน GitHub Releases สำหรับติดตั้งและอัปเดตผ่าน Foundry ไม่มี npm install หรือ build ที่ต้องทำเพื่อใช้ใน Foundry
 
+> การปรับ Flower/Color Items และ Foundry Combat ด้านล่างเป็นชุดพัฒนาที่ยังไม่ได้เผยแพร่ Release
+
 ## ใช้ชีท Edit / Play และ Skill Items
 
 - ชีทเริ่มใน **Play** เพื่อใช้สกิลและปรับทรัพยากรระหว่างเล่น กด **Play → Edit** เพื่อแก้ข้อมูลตัวละครและจัดสกิล แล้วกด **Edit → Play** เมื่อพร้อมเล่น
 - ใน Edit คลิกรูป **Portrait** หรือ **Token** เพื่อเลือกไฟล์ผ่าน Foundry File Browser รูป Token เปลี่ยน Prototype Token; ใช้ **Token settings** สำหรับการตั้งค่าเพิ่มเติม หากเปิดโมดูล **Tokenizer** ที่รองรับ Foundry เวอร์ชันของคุณ จะมีปุ่ม Tokenizer เรียก API `tokenizeActor` ของโมดูล
-- GM กด **Skill Item Library · Import / Open** เพื่อนำเข้าหรือเปิดคลัง 54 สกิลใน Item Directory ผู้เล่นอ่านและลาก Item จากคลังได้ ไม่ต้องสร้างใหม่ทีละสกิล
-- ลาก Item จาก Directory หรือ Compendium ลงช่อง **No. 1–6** ใน Edit เพื่อเพิ่มสกิลของ Actor ลากสกิลที่มีอยู่ระหว่างช่องเพื่อสลับหมายเลข หรือปรับ Number บน Item sheet หากปลายทางมีสกิล ระบบจะสลับช่องให้
-- ลากลงส่วน **Skill / Custom** เพื่อเก็บในสำรอง (No. 0) สกิลเดิมยังอยู่เมื่อเปลี่ยนชุด ช่อง **No. 1** สงวนให้ Knight’s Etiquette และจัด loadout ได้เมื่อไม่มี Battle ที่กำลังดำเนินอยู่
+- GM กด **Skill Item Library · Import / Open** เพื่อนำเข้าหรือเปิดคลัง 54 Skill Items, 7 Flower Items และ 6 Color Items ใน Item Directory ผู้เล่นอ่านและลาก Item จากคลังได้ ไม่ต้องสร้างใหม่ทีละสกิล
+- ลาก Item จาก Directory หรือ Compendium ลงช่อง **No. 1–6** ใน Edit เพื่อเพิ่มสกิลของ Actor ลากสกิลที่มีอยู่ระหว่างช่องเพื่อสลับหมายเลข หรือปรับ Number บน Item sheet รวมทั้ง Knight’s Etiquette ทุกช่อง หากปลายทางมีสกิล ระบบจะสลับช่องให้
+- ลากลงส่วน **Skill / Custom** เพื่อเก็บในสำรอง (No. 0) สกิลเดิมยังอยู่เมื่อเปลี่ยนชุด Knight’s Etiquette ย้ายช่อง เก็บสำรอง หรือลบได้โดยไม่มีการล็อก และจัด loadout ได้เมื่อไม่มี Battle ที่กำลังดำเนินอยู่
 - กดหัวข้อ **Skill loadout** เพื่อพับ/ขยาย ชีทเก็บสถานะพับและตำแหน่งเลื่อนขณะอัปเดตหรือเปลี่ยนโหมด
-- **Starting Endurance** คือ Endurance ตั้งต้นก่อนโบนัส Stage ไม่ใช่เพดานการฟื้น **Base Defense** คือค่าพื้นฐานที่แก้ไขได้ ส่วน **Effective** คือค่าที่ใช้กับการโจมตีหลังรวมเอฟเฟกต์ปัจจุบัน
+- เลือก **Flower** และ **Color** โดยลาก Parent Items ลงชีท แต่ละ Parent เก็บ `skillKeys` ของลูก Skill ที่เลือกลงช่องได้ ลาก Skill ลง Item sheet ของ Parent เพื่อเพิ่มรายการลูกได้ สกิลที่อยู่นอก Parent ปัจจุบันเก็บในสำรองได้ แต่ลงช่อง/ใช้ไม่ได้; Knight’s Etiquette ใช้ได้ทุกตัวละครโดยไม่มีการล็อกช่อง
+- **Color Item** กำหนด Endurance, Defense และ Charge; **Flower Item** เพิ่มค่าสถานะตามที่ระบุใน Item (Flower จากหนังสือเริ่มที่ 0 สำหรับค่าสถานะเหล่านี้) เปลี่ยน Parent แล้วคำนวณใหม่และย้ายสกิลที่ใช้ไม่ได้ไปสำรอง
+- ชีทแสดงเฉพาะ **Endurance ปัจจุบัน**, **Defense ที่ใช้จริง**, **Charge หลังรวม Round/Stage bonus** และ **Attack bonus** ไม่มีช่อง Base หรือ Garden ค่าที่แสดงใช้ฟังก์ชันเดียวกับการคำนวณใน Combat
+- ปุ่ม **Foundry Combat** เปิด Combat Tracker ของ Foundry ใช้ Combat/Combatant, initiative order, round และ turn ของ Foundry เป็นหลัก ระบบเพิ่มเฟส Set/Charge/Actions/Cut และ Stage routine ผ่าน Combat document เก็บรายละเอียด Stage ใน flags ของ Combat
+- ใช้ **Stage / Gardens** บน Tracker เพื่อเปิด Arena และปรับ Garden ด้วยปุ่ม Set ของ GM Garden ยังใช้กับระยะและกติกา แต่ไม่มีบนชีท Bringer
 
 ## เริ่มเล่น
 
 - สร้าง Actor แบบ **Bringer** และ **Sheath** สำหรับแต่ละคู่ โดยมอบ Ownership ให้ผู้เล่นที่ควบคุมบทนั้น
 - เปลี่ยนชีทเป็น Edit แล้วบนแผ่น Bringer เลือกคู่หูใน Partner แล้วให้ GM กด **Sync Pair** เพื่อส่ง Wish, Flower/Color, keyword และ Hope/Despair ที่ตรงข้ามไปยัง Sheath ข้อมูลส่วนตัวของ Sheath ยังแก้ไขแยกได้
-- กด **สร้างชุดสกิล** เลือกดอกไม้ สี และห้าสกิลที่ไม่ซ้ำ ช่อง 1 เป็น Knight’s Etiquette ค่าสีเริ่มต้นถูกกรอกให้อัตโนมัติ
-- สกิลที่เปลี่ยนออกจะเก็บไว้ในช่อง 0 เป็นสกิลสำรองตามกฎแคมเปญ ถ้าต้องการจัดช่องเอง ให้แก้ช่องเดิมเป็น 0 ก่อน แล้วค่อยใส่สกิลใหม่ลงช่องว่าง
+- กด **สร้างชุดสกิล** เลือก Flower และ Color Items แล้วเลือกหกสกิลที่ไม่ซ้ำลงช่อง 1–6 ใช้ค่าสถานะจาก Parent Items โดยเลือกว่าจะใส่ Knight’s Etiquette หรือไม่ก็ได้
+- สกิลที่เปลี่ยนออกจะเก็บไว้ในช่อง 0 เป็นสกิลสำรองตามกฎแคมเปญ จัดช่องด้วยการลากสลับหรือแก้ Number บน Item sheet ได้
 - สร้าง **Embraced** หรือ **Eclipsed** เป็นศัตรูและจัดชุดสกิลแบบเดียวกัน Eclipsed มีคู่ Sheath ได้ ส่วน Embraced ไม่มีคู่ตามกฎ
 - เปิด **Stellar Battle** จากปุ่มบนแผ่นหรือจากแถบเครื่องมือ Token ระบบมีตัวติดตามการต่อสู้ของตัวเองในหน้าต่าง Arena of Wishes ใช้หน้าต่างนี้ในการดำเนินเทิร์น
 
@@ -50,9 +56,9 @@ Repository สำหรับ v14: [https://github.com/NicoRaz/FVTT-StellaKnight
 
 ## การต่อสู้
 
-1. GM กด **เริ่มการต่อสู้** เลือกหนึ่งศัตรู ผู้เล่น และ Stage หนึ่งใน 7 แบบ ระบบเริ่ม Round 1 / Set และใช้ Set Routine รวมทั้งโบนัส Endurance/Charge/Attack ของศัตรูตามจำนวน Bringers
-2. จัด Garden 1–6 บนแผ่นตัวละครก่อนเริ่ม Actions ศูนย์กลางสนามเข้าไม่ได้ ใช้ลูกศร ↑↓ ใน Set เพื่อเปลี่ยนลำดับ Bringers; ศัตรูอยู่ก่อนเสมอ
-3. GM กด **เฟส / เทิร์นถัดไป** เข้า Charge ผู้เล่นแต่ละคนกด **ทอย Charge** จากแผ่นหรือหน้าต่าง Arena แล้วใช้ปุ่มบนการ์ด Chat เพื่อปรับ/ทอยใหม่ก่อนกด **ยืนยันผล** ผลแต่ละลูกถูกเพิ่มลงช่องสกิลที่ตรงกับหน้าเต๋า ลูกที่เหลือจากรอบก่อนยังคงอยู่
+1. เพิ่ม Combatants ใน Foundry Combat Tracker แล้ว GM กด **Begin Combat** เพื่อเลือก Stage หนึ่งใน 7 แบบ หรือกด **เริ่มการต่อสู้** จาก Stage / Gardens ระบบเริ่ม Round 1 / Set และใช้ Set Routine รวมทั้งโบนัส Endurance/Charge/Attack ของศัตรูตามจำนวน Bringers
+2. จัด Garden 1–6 ใน Stage / Gardens ก่อนเริ่ม Actions ศูนย์กลางสนามเข้าไม่ได้ ใช้ initiative ของ Foundry Combat Tracker เพื่อจัดลำดับ Bringers; ศัตรูอยู่ก่อนเสมอ
+3. GM กด **Next phase / turn** ใน Foundry Combat Tracker เข้า Charge ผู้เล่นแต่ละคนกด **ทอย Charge** จากแผ่นหรือหน้าต่าง Arena แล้วใช้ปุ่มบนการ์ด Chat เพื่อปรับ/ทอยใหม่ก่อนกด **ยืนยันผล** ผลแต่ละลูกถูกเพิ่มลงช่องสกิลที่ตรงกับหน้าเต๋า ลูกที่เหลือจากรอบก่อนยังคงอยู่
 4. เมื่อผู้ที่ยังไม่หมดสภาพ Charge ครบ GM เดินเข้า Actions ใช้สกิลจากแผ่น ผู้เล่นเลือกเป้าหมายและตัวเลือกตามข้อความสกิล
 5. การโจมตีประกาศเป็นการ์ด **Before attack** ก่อนทอย เพื่อใช้สกิลแทรกและ Dice Boost จากนั้นเจ้าของตัวละครหรือ GM กด **ทอย** สกิลหลังทอยและก่อนรับความเสียหายใช้ได้ก่อนกด **ยืนยันผล** ระบบนับลูกที่ ≥ Defense เป็นความเสียหาย
 6. GM เดินเทิร์นถัดไปเพื่อใช้ Action Routine ที่ประกาศเป็น Omen หากเกิดการโจมตีของ Stage ต้องยืนยันการ์ด Chat ก่อนเดินเทิร์นต่อ ถ้า Stage ให้ศัตรูใช้สกิลเพิ่ม GM เลือกสกิลที่ได้รับ Set die แล้วใช้สกิลนั้นบนแผ่นศัตรูก่อนเดินต่อ

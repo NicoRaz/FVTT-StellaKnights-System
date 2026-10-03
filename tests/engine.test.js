@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {setup,user,getState,flags,MockItem} from './runtime-fixture.js';
 import {execute,attack,createCheck} from '../module/engine.js';
 import {skills,skillDocument} from '../module/library.js';
+import {saveState} from '../module/helpers.js';
 import {ID} from '../module/rules.js';
 const pending=()=>game.messages.get(getState().pending);
 test('Attack declaration allows pre-roll support and resolves exactly once',async()=>{
@@ -59,7 +60,7 @@ test('Start, charge, Set/Actions/Cut flow preserves unused Set dice between roun
  for(const a of [enemy,knight,ally]){rig([1,2,3,4]);await execute('charge',{actor:a.id},gm);await execute('resolve',{},gm);}
  await execute('advance',{},gm);assert.equal(getState().phase,'actions');assert.equal(getState().actors[getState().turn],enemy.id);
  // Stop before Stage attacks: change to no-damage routines through the Director's sandbox.
- const s=getState();s.stage='dragon';s.omenIndex=4;await game.settings.set(ID,'battle',s);
+ const s=getState();s.stage='dragon';s.omenIndex=4;await saveState(s);
  await execute('advance',{},gm);assert.equal(getState().turn,1);
  rig([1]);rig([1]);await execute('advance',{},gm);assert.equal(getState().turn,2);
  // Dragon's breath next turn has no occupants in Garden 4; Garden 1 occupants are hit.

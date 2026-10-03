@@ -75,14 +75,15 @@
   "Stella.Custom": "Custom Skill",
   "Stella.Support": "Support",
   "Stella.Opponent": "Opponent",
-  "Stella.LoadoutHelp": "ช่อง 1 เป็น Knight’s Etiquette เลือกอีกห้าสกิลที่ไม่ซ้ำกันจากดอกไม้และสีของคุณ",
+  "Stella.LoadoutHelp": "เลือก Flower และ Color Items แล้วเลือกหกสกิลที่ไม่ซ้ำลงช่องใดก็ได้ Knight’s Etiquette ไม่ล็อกช่อง",
   "TYPES.Actor.bringer": "Bringer",
   "TYPES.Actor.sheath": "Sheath",
   "TYPES.Actor.embraced": "Embraced",
   "TYPES.Actor.eclipsed": "Eclipsed",
   "TYPES.Item.ability": "สกิล",
   "Stella.InitialHelp": "Endurance ตั้งต้นก่อนโบนัส Stage การฟื้นสามารถเกินค่านี้ได้",
-  "Stella.BaseDefense": "Defense พื้นฐาน",
   "Stella.EffectiveDefense": "ค่าที่ใช้จริง",
-  "Stella.DefenseHelp": "ค่าพื้นฐานแก้ไขได้ ค่าที่ใช้จริงรวมเอฟเฟกต์ปัจจุบันและใช้รับการโจมตี"
+  "Stella.DefenseHelp": "Defense ปัจจุบันหลังรวมเอฟเฟกต์ ใช้รับการโจมตี",
+  "TYPES.Item.flower": "Flower",
+  "TYPES.Item.color": "Color"
 }

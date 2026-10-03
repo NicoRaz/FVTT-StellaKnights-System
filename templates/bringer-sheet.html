@@ -1,15 +1,14 @@
 <div class="stella-content {{#if editing}}mode-edit{{else}}mode-play{{/if}}">
-  <div class="title-header">{{typeLabel}} <button type="button" data-action="mode" aria-label="Switch Edit / Play mode">{{#if editing}}Edit → Play{{else}}Play → Edit{{/if}}</button> <span class="state">{{status}}</span><button type="button" data-action="battle">{{localize "Stella.Battle"}}</button><button type="button" data-action="bouquet">Bouquet</button></div>
+  <div class="title-header">{{typeLabel}} <button type="button" data-action="mode" aria-label="Switch Edit / Play mode">{{#if editing}}Edit → Play{{else}}Play → Edit{{/if}}</button> <span class="state">{{status}}</span><button type="button" data-action="battle">Foundry Combat</button><button type="button" data-action="bouquet">Bouquet</button></div>
   <header class="sheet-header">
     <div class="stella-portraits"><button type="button" data-action="portrait" title="Choose Portrait with File Browser"><img class="profile-img" src="{{actor.img}}" alt="{{actor.name}}" width="112" height="112"></button><button type="button" data-action="token" title="Choose Token with File Browser"><img class="token-img" src="{{tokenImage}}" alt="Token" width="64" height="64"></button><div class="edit-only"><button type="button" data-action="tokenConfig">Token settings</button>{{#if hasTokenizer}}<button type="button" data-action="tokenizer">Tokenizer</button>{{/if}}</div></div>
     <div class="header-fields"><input class="charname" name="name" value="{{actor.name}}" aria-label="Name">
       <p class="edit-only">Click Portrait or Token to browse image files.</p>
       {{#if fighter}}<div class="stella-stats">
         <label>{{localize "Stella.Hp"}}<input type="number" name="system.hp.value" min="0" value="{{system.hp.value}}"></label>
-        <label><span title="{{localize "Stella.InitialHelp"}}">{{localize "Stella.Initial"}} ⓘ</span><input type="number" name="system.hp.max" min="0" value="{{system.hp.max}}"></label>
-        <label><span title="{{localize "Stella.DefenseHelp"}}">{{localize "Stella.BaseDefense"}} ⓘ · {{localize "Stella.EffectiveDefense"}}: {{derivedDefense}}</span><input type="number" name="system.defense.value" min="1" max="6" value="{{system.defense.value}}"></label>
-        <label>{{localize "Stella.Charge"}}<input type="number" name="system.charge.value" min="0" value="{{system.charge.value}}"></label>
-        <label>{{localize "Stella.Garden"}}<input type="number" name="system.garden" min="1" max="6" value="{{system.garden}}"></label>
+        <label>{{localize "Stella.Defense"}}<output class="stella-stat">{{derivedDefense}}</output></label>
+        <label>{{localize "Stella.Charge"}}<output class="stella-stat">{{currentCharge}}</output></label>
+        <label>Attack bonus<output class="stella-stat">{{attackBonus}}</output></label>
         <label>Bouquet<input type="number" name="system.bouquet" min="0" value="{{system.bouquet}}"></label>
         <label>{{localize "Stella.Exp"}}<input type="number" name="system.exp" min="0" value="{{system.exp}}"></label>
         <label>{{localize "Stella.Distortion"}}<input type="number" name="system.distortion" min="0" max="3" value="{{system.distortion}}"></label>
@@ -22,8 +21,10 @@
       <label>{{localize "Stella.Sex"}}<input name="system.details.sex" value="{{system.details.sex}}"></label>
       <label>{{localize "Stella.Career"}}<input name="system.details.career" value="{{system.details.career}}"></label>
       <label>{{localize "Stella.Partner"}}<select name="system.details.partner">{{selectOptions partners selected=system.details.partner valueAttr="id" labelAttr="name" blank="—"}}</select>{{#if fighter}}<button type="button" data-action="pair">Sync Pair (GM)</button>{{/if}}</label>
-      <label>{{localize "Stella.Crest"}}<select name="system.details.crest.color">{{selectOptions colors selected=system.details.crest.color}}</select></label>
-      <label>{{localize "Stella.CrestAnd"}}<select name="system.details.crest.flower">{{selectOptions flowers selected=system.details.crest.flower}}</select></label>
+      {{#if fighter}}
+      <div class="stella-crest" data-crest="color"><b>Color</b>{{#if crest.color}}<div class="item stella-item-row" draggable="true" data-item-id="{{crest.color.id}}"><span>{{crest.color.name}}</span><button class="edit-only" type="button" data-action="edit" data-item="{{crest.color.id}}">Edit</button><button class="edit-only" type="button" data-action="delete" data-item="{{crest.color.id}}">Delete</button></div>{{else}}<p>Drop a Color Item here.</p>{{/if}}</div>
+      <div class="stella-crest" data-crest="flower"><b>Flower</b>{{#if crest.flower}}<div class="item stella-item-row" draggable="true" data-item-id="{{crest.flower.id}}"><span>{{crest.flower.name}}</span><button class="edit-only" type="button" data-action="edit" data-item="{{crest.flower.id}}">Edit</button><button class="edit-only" type="button" data-action="delete" data-item="{{crest.flower.id}}">Delete</button></div>{{else}}<p>Drop a Flower Item here.</p>{{/if}}</div>
+      {{else}}<p>Color: {{system.details.crest.color}} · Flower: {{system.details.crest.flower}}</p>{{/if}}
       <label>{{localize "Stella.Story"}}<input name="system.details.story" value="{{system.details.story}}"></label>
       <label>{{localize "Stella.Hope"}} / {{localize "Stella.Despair"}}<select name="system.details.karma.type">{{selectOptions karmaChoices selected=system.details.karma.type}}</select><input name="system.details.karma.detail" value="{{system.details.karma.detail}}"></label>
       <label>{{localize "Stella.Wish"}}<input name="system.details.wish" value="{{system.details.wish}}"></label>
@@ -39,7 +40,8 @@
   </details>
   {{#if fighter}}
     <div class="stella-toolbar"><button class="edit-only" type="button" data-action="setup">{{localize "Stella.Setup"}}</button><button type="button" data-action="charge">{{localize "Stella.RollCharge"}}</button>{{#unless enemy}}<button type="button" data-action="life">Immortal Life</button><button type="button" data-action="atypia">Atypia</button>{{/unless}}<button type="button" data-action="flame">Flame ({{system.flames}})</button><label class="stella-inline"><input type="checkbox" name="system.reportReroll" {{checked system.reportReroll}}>Session report re-roll</label></div>
-    <details data-section="loadout" {{#if sections.loadout}}open{{/if}}><summary>Skill loadout · No. 1–6</summary><p class="edit-only">Drag Skill Items here to assign a number. Drag between slots to swap; No. 1 is Knight’s Etiquette.</p><button class="edit-only" type="button" data-action="library">Skill Item Library{{#if canImport}} · Import / Open{{/if}}</button>
+    <details data-section="loadout" {{#if sections.loadout}}open{{/if}}><summary>Skill loadout · No. 1–6</summary><p class="edit-only">Drag Skill Items here to assign a number. Drag between any slots to swap, including Knight’s Etiquette.</p><button class="edit-only" type="button" data-action="library">Skill Item Library{{#if canImport}} · Import / Open{{/if}}</button>
+    <details class="edit-only"><summary>Skills allowed by Flower / Color</summary><ul>{{#each availableSkills}}<li class="item" draggable="true" data-world-item-id="{{id}}">{{name}}</li>{{else}}<li>Import the library and select Flower / Color Items.</li>{{/each}}</ul></details>
     <div class="set-ability">
       {{#each slots}}
       <article class="ability item" data-slot="{{number}}" data-item-id="{{item.id}}" {{#if item}}draggable="true"{{/if}}>

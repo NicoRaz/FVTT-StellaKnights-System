@@ -1,3 +1,4 @@
+import {validateSkillSlot} from "./crest.js";
 import {ID, integer, gardenDistance, adjacent, clockwise, opposite, isEnemy, isFighter, escapeHTML as esc} from "./rules.js";
 import {state,saveState,byId,owner,currentActors,chat,rollDice,t,pick} from "./helpers.js";
 import {attack,bonusCharge,heal,changeHP,pendingCheck,updateCheck,rolledMarkers,victory} from "./engine.js";
@@ -28,6 +29,8 @@ export async function moveActor(a,path,{forced=false}={}) {
 export async function useSkill(data,user) {
   const a=owner(byId(data.actor),user),item=a.items.get(data.item),s=state();
   if(!item||item.type!=="ability"||item.system.charge<1)throw Error("Skill has no Set dice");
+  if(item.system.number<1)throw Error("Assign the Skill to a numbered slot first");
+  validateSkillSlot(a,item,item.system.number);
   if(!s.active || !s.actors.includes(a.id))throw Error("No active battle");
   const key=item.system.key||"custom", timing=item.system.timingKey;
   if(s.freeEnemy?.actor===a.id && s.freeEnemy.item!==item.id)throw Error("Use the skill granted by the Stage");

@@ -4,13 +4,25 @@ import {createLoadout, importLibrary, stages} from "./library.js";
 import {useSkill, runSteps} from "./skills-engine.js";
 import {setRoutine, readOmen, executeOmen, cutRoutine} from "./stages.js";
 import {sessionAction,session} from "./session.js";
-export function effectiveDefense(a, check = null) {
-  let value = a.system.defense.value;
-  if (a.items.some(i=>i.system.key==="royal-rose-dress" && i.system.charge>0)) value--;
-  for (const m of a.system.modifiers) if (m.kind==="defense") value+=m.value;
-  const s=state(); if (s.markers?.some(m=>m.kind==="war" && m.garden===a.system.garden)) value--;
-  if (check?.gardenDefense) value=a.system.garden;
+import {ensureCombat,stellarCombat,setCombatOrder} from "./combat-state.js";
+import {crestStats,crestItems,validateSkillSlot} from "./crest.js";
+const activeFor=a=>{const s=state();return !!(s.active&&s.actors.includes(a.id));};
+const currentModifiers=a=>(a.system.modifiers??[]).filter(m=>activeFor(a)||!['battle','round','next-attack'].includes(m.duration));
+const dressActive=a=>activeFor(a)&&a.items.some(i=>i.system.key==='royal-rose-dress'&&i.system.number>0&&i.system.charge>0);
+export function effectiveDefense(a,check=null) {
+  let value=crestStats(a).defense;
+  if(dressActive(a))value--;
+  for(const m of currentModifiers(a))if(m.kind==='defense')value+=m.value;
+  const s=state();if(activeFor(a)&&s.markers?.some(m=>m.kind==='war'&&m.garden===a.system.garden))value--;
+  if(check?.gardenDefense)value=a.system.garden;
   return defense(value+(check?.defense?.[a.id]??0));
+}
+export function effectiveCharge(a) {
+  const s=state();return Math.max(0,crestStats(a).charge+(activeFor(a)?s.round+(a.system.blessings?.charge??0):0));
+}
+export function effectiveAttackBonus(a) {
+  return (activeFor(a)?(a.system.blessings?.attack??0)+(a.system.atypia?3:0):0)
+    +currentModifiers(a).filter(m=>m.kind==='attack').reduce((sum,m)=>sum+m.value,0)+(dressActive(a)?1:0);
 }
 export async function changeHP(a, delta, {revive=false, source=null, check=null}={}) {
   const previous=a.system.hp.value, value=endurance(previous,delta,{revive});
@@ -65,10 +77,7 @@ function checkAuthority(c,user) {c.actor?owner(byId(c.actor),user):gmOnly(user);
 export async function attack(a, count, targets, options={}) {
   const valid=targets.map(byId).filter(target=>target.system.hp.value>0 && (options.stage || options.ignoreRange || adjacent(a.system.garden,target.system.garden)));
   if(!valid.length) {await chat(t("Attack"),"No target in range: zero successes.",a);if(options.continuation) await runSteps(options.continuation); return;}
-  let modifiers=a?.system.modifiers??[];
-  let dice=count+(a?.system.blessings.attack??0)+modifiers.filter(m=>m.kind==="attack").reduce((sum,m)=>sum+m.value,0);
-  if(a?.items.some(i=>i.system.key==="royal-rose-dress" && i.system.charge>0))dice++;
-  if(a?.system.atypia)dice+=3;
+  let dice=count+(a?effectiveAttackBonus(a):0);
   // Yellow Queen stacks per target; all selected targets must share a pool.
   dice-=Math.max(0,...valid.map(target=>target.system.modifiers.filter(m=>m.kind==="queen").reduce((sum,m)=>sum+m.value,0)));
   const check={kind:"attack",actor:a?.id??null,title:options.title,count:Math.max(0,dice),targets:valid.map(v=>v.id),
@@ -159,7 +168,7 @@ async function charge(data,user) {
   const a=owner(byId(data.actor),user),s=state();
   if(!s.active || s.phase!=="charge" || !s.actors.includes(a.id) || s.charged.includes(a.id))throw Error("Not in Charge phase or already charged");
   if(a.system.hp.value===0)throw Error("Incapacitated characters cannot Charge");
-  const count=a.system.charge.value+s.round+a.system.blessings.charge;
+  const count=effectiveCharge(a);
   const {values,roll}=await rollDice(count);
   await createCheck({kind:"charge",actor:a.id,count,values,rolled:true,boosts:0,rerolled:false,petiteIndex:null},roll);
   const next=state();next.charged.push(a.id);await saveState(next);await rolledMarkers(a,values);
@@ -182,17 +191,20 @@ async function startBattle(data,user) {
   if(enemies.length!==1||!knights.length)throw Error("Choose one Enemy and at least one Bringer");
   const stage=stages.find(s=>s.id===data.stage);if(!stage)throw Error("Choose a Stage");
   for(const a of actors) {
-    const slots=a.items.filter(i=>i.system.number>0);
+    const crest=crestItems(a);if(!crest.color||!crest.flower)throw Error(`${a.name}: choose Flower and Color Items first`);
+    const slots=a.items.filter(i=>i.type==="ability"&&i.system.number>0);
+    for(const skill of slots)validateSkillSlot(a,skill,skill.system.number);
     if(slots.length!==6||new Set(slots.map(i=>i.system.number)).size!==6)throw Error(`${a.name}: build a six-slot loadout first`);
   }
+  await ensureCombat([enemies[0],...knights],data.combat);
   const s={active:true,round:1,phase:"set",actors:[enemies[0].id,...knights.map(a=>a.id)],turn:0,stage:stage.id,
     omenIndex:0,omen:null,pending:null,charged:[],maps:[],markers:[],damage:{},supported:[],decisive:[],awarded:false};
   await saveState(s);
   for(const a of actors) {
     const blessing=isEnemy(a)?enemyBlessing(knights.length):{hp:0,charge:0,attack:0};
-    await a.update({"system.hp.value":a.system.hp.max+blessing.hp,"system.blessings":blessing,"system.done":false,
+    await a.update({"system.hp.value":crestStats(a).hp+blessing.hp,"system.blessings":blessing,"system.done":false,
       "system.modifiers":[],"system.atypia":false,"system.flames":0,"system.bouquetSpent":0});
-    await a.updateEmbeddedDocuments("Item",a.items.map(i=>({_id:i.id,"system.charge":0,"system.uses":{}})));
+    await a.updateEmbeddedDocuments("Item",a.items.filter(i=>i.type==="ability").map(i=>({_id:i.id,"system.charge":0,"system.uses":{}})));
   }
   await chat(t("Start"),`${esc(stage.name)} · Round 1`);await setRoutine();
 }
@@ -228,13 +240,14 @@ export async function victory() {
 async function award(data,user) {
   gmOnly(user);const s=state();if(s.active||!s.outcome||s.awarded)throw Error("Finish a battle before awarding; only once per battle");
   for(const a of currentActors().filter(a=>!isEnemy(a))) {
-    const medals=Number(s.outcome==="victory")+Number(s.decisive.includes(a.id))+Number(a.system.hp.value>=a.system.hp.max)
+    const medals=Number(s.outcome==="victory")+Number(s.decisive.includes(a.id))+Number(a.system.hp.value>=crestStats(a).hp)
       +Number(s.supported.includes(a.id))+Number(data.conversed?.includes(a.id));
     await a.update({"system.exp":a.system.exp+medals});await chat(t("Award"),`${medals} medals`,a);
   }
   s.awarded=true;await saveState(s);
 }
 export async function execute(op,data,user) {
+  if(data.combat&&["advance","end"].includes(op)&&data.combat!==state().combatId)throw Error("Select the active Stellar Combat first");
   if(["roll","resolve","report-reroll"].includes(op)&&data.message&&data.message!==state().pending)throw Error("That check has ended");
   switch(op) {
     case "session-start":case "session-next":case "sync-pair":return sessionAction(op,data,user);
@@ -278,7 +291,8 @@ export async function execute(op,data,user) {
       gmOnly(user);const s=state();if(s.phase!=="set")throw Error("Change acting order in Set phase");
       const index=s.actors.indexOf(data.actor),dest=index+integer(data.delta,-1,1);
       if(index<=0||dest<=0||dest>=s.actors.length)throw Error("Enemy acts first");
-      [s.actors[index],s.actors[dest]]=[s.actors[dest],s.actors[index]];return saveState(s);
+      [s.actors[index],s.actors[dest]]=[s.actors[dest],s.actors[index]];
+      await setCombatOrder(stellarCombat(),s.actors);return saveState(s);
     }
     case "flame-retaliate": {
       const a=owner(byId(data.actor),user),s=state(),d=s.damage?.[a.id];
