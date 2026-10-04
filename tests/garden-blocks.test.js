@@ -5,7 +5,19 @@ import {ID} from '../module/rules.js';
 import {newBlock,validateBlocks} from '../module/skill-blocks.js';
 import {execute} from '../module/engine.js';
 const block=(op,values={})=>({...newBlock(),op,...values});
-async function regionSetup(){const f=await setup();foundry.data={regionBehaviors:{RegionBehaviorType:class{}}};globalThis.CONST={REGION_EVENTS:{TOKEN_ENTER:'tokenEnter',TOKEN_MOVE_WITHIN:'tokenMoveWithin',BEHAVIOR_ACTIVATED:'behaviorActivated',REGION_BOUNDARY:'regionBoundary'}};return {...f,...await import('../module/garden-region.js')};}
+async function regionSetup(){const f=await setup();foundry.data={fields:{NumberField:class{constructor(options){Object.assign(this,options);}}},regionBehaviors:{RegionBehaviorType:class{static defineSchema(){throw Error('The GardenRegionBehavior subclass of DataModel must define its Document schema');}}}};globalThis.CONST={REGION_EVENTS:{TOKEN_ENTER:'tokenEnter',TOKEN_MOVE_WITHIN:'tokenMoveWithin',BEHAVIOR_ACTIVATED:'behaviorActivated',REGION_BOUNDARY:'regionBoundary'}};return {...f,...await import('../module/garden-region.js')};}
+test('Garden schema loads during startup localization without calling the abstract parent schema',async()=>{
+ const {GardenRegionBehavior,registerGardenRegion,GARDEN_BEHAVIOR}=await regionSetup();
+ CONFIG.RegionBehavior={dataModels:{},typeLabels:{},typeIcons:{}};
+ globalThis.Hooks={on(){}};
+ registerGardenRegion();
+ // Foundry localization requests the schema of each registered model before ready.
+ const schema=CONFIG.RegionBehavior.dataModels[GARDEN_BEHAVIOR].defineSchema();
+ assert.equal(CONFIG.RegionBehavior.dataModels[GARDEN_BEHAVIOR],GardenRegionBehavior);
+ assert.deepEqual(Object.keys(schema),['garden']);
+ assert.equal(schema.garden.initial,1);assert.equal(schema.garden.min,1);assert.equal(schema.garden.max,6);
+ assert.equal(schema.garden.integer,true);assert.equal(schema.garden.required,true);
+});
 function token(actor){return {actor,flags:{},getFlag(ns,key){return this.flags[ns]?.[key]},async setFlag(ns,key,value){(this.flags[ns]??={})[key]=value;}};}
 test('Garden behavior assigns all tokens inside and applies changed values on activation',async()=>{
  const {knight,ally,assignGarden,syncGardenRegion,GARDEN_BEHAVIOR}=await regionSetup();const tokens=[token(knight),token(ally),token(null)];

@@ -12,7 +12,8 @@ export async function syncGardenRegion(region) {
   for(const token of region.tokens)await assignGarden(token,behavior.system.garden);
 }
 export class GardenRegionBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
-  static defineSchema(){return {...super.defineSchema(),garden:new foundry.data.fields.NumberField({required:true,integer:true,min:1,max:6,initial:1,label:'Garden',hint:'Garden number assigned to every Token inside this Region.'})};}
+  // RegionBehaviorType inherits the abstract defineSchema; it has no schema to merge.
+  static defineSchema(){return {garden:new foundry.data.fields.NumberField({required:true,integer:true,min:1,max:6,initial:1,label:'Garden',hint:'Garden number assigned to every Token inside this Region.'})};}
   static events={
     [CONST.REGION_EVENTS.TOKEN_ENTER]:async function(event){await assignGarden(event.data.token,this.garden);},
     [CONST.REGION_EVENTS.TOKEN_MOVE_WITHIN]:async function(event){await assignGarden(event.data.token,this.garden);},

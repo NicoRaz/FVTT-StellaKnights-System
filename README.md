@@ -21,6 +21,11 @@ Repository สำหรับ v14: [https://github.com/NicoRaz/FVTT-StellaKnight
 
 > Flower/Color Items และ Foundry Combat พร้อมใช้งานในเวอร์ชัน 1.2.0
 
+## เวอร์ชัน 1.3.1
+
+- แก้จอดำตอนเปิด World: Garden Region Behavior กำหนด schema โดยไม่เรียกเมธอด abstract ของ Foundry
+- เพิ่ม regression test สำหรับการอ่าน schema ระหว่างโหลดระบบภาษา ทดสอบอัตโนมัติผ่าน 83 tests
+
 ## เวอร์ชัน 1.3.0
 
 - ใช้ Initiative และ Round/Turn ของ Foundry โดยตรง
