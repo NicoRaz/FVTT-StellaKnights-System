@@ -1,3 +1,5 @@
+import {runBlockSkill} from './skill-blocks.js';
+import {stageRecord} from './stage-data.js';
 import {clockwise,opposite,toward,gardenDistance,isEnemy,escapeHTML as esc} from "./rules.js";
 import {state,saveState,currentActors,chat,rollDice,t} from "./helpers.js";
 import {heal,changeHP,attack,bonusCharge} from "./engine.js";
@@ -14,7 +16,11 @@ async function attackBonus(enemy,value,duration="battle") {
   await enemy.update({"system.modifiers":[...enemy.system.modifiers,{kind:"attack",value,duration}]});
 }
 export async function setRoutine() {
-  const s=state(),stage=stages.find(x=>x.id===s.stage),{enemy,knights}=roster();
+  const s=state(),stage=stageRecord()??stages.find(x=>x.id===s.stage),{enemy,knights}=roster();
+  if(!stage)return;
+  const scripted=stage.actor?.items.find(i=>i.system.key===`stage:${s.stage}:set`&&i.system.scriptEnabled);
+  if(scripted){await runBlockSkill({actor:stage.actor.id,item:scripted.id,targets:[...(game.user.targets??[])].map(t=>t.actor?.id).filter(Boolean)},game.user);return;}
+  if(!enemy)return;
   await chat(`${t("Set")} · Round ${s.round}`,`<pre>${esc(stage.setText)}</pre>`);
   switch(s.stage) {
     case "ragnarok":if(s.round===1)await marker("war",[1,4]);else {const {values}=await rollDice(1);await heal(enemy,values[0]);}break;
@@ -32,10 +38,11 @@ export async function setRoutine() {
       else if(s.round===2)await attackBonus(enemy,1);break;
   }
 }
-export async function readOmen() {
-  const s=state();if(s.phase!=="actions"||!s.actors[s.turn])return;
-  const a=game.actors.get(s.actors[s.turn]);if(isEnemy(a))return;
-  const stage=stages.find(x=>x.id===s.stage),index=s.omenIndex%stage.actions.length;
+export async function readOmen({allTurns=false}={}) {
+  const s=state();if(!allTurns&&(s.phase!=="actions"||!s.actors[s.turn]))return;
+  const a=game.actors.get(s.actors[s.turn]);if(!allTurns&&isEnemy(a))return;
+  const stage=stageRecord()??stages.find(x=>x.id===s.stage);if(!stage||!stage.actions?.length)return;
+  const index=s.omenIndex%stage.actions.length;
   s.omen={index,executed:false};
   if(s.stage==="plushie"&&index>=2){const {values}=await rollDice(1);s.omen.garden=values[0];}
   await saveState(s);
@@ -44,9 +51,13 @@ export async function readOmen() {
 }
 export async function executeOmen() {
   let s=state();if(!s.omen||s.omen.executed)return;
-  const stage=stages.find(x=>x.id===s.stage),routine=stage.actions[s.omen.index],n=s.omen.index+1,selectedGarden=s.omen.garden;
+  const stage=stageRecord()??stages.find(x=>x.id===s.stage),routine=stage.actions[s.omen.index],n=s.omen.index+1,selectedGarden=s.omen.garden;
   s.omen.executed=true;s.omenIndex++;await saveState(s);
+  if(stage.actor)await stage.actor.update({"system.omen":s.omenIndex%stage.actions.length});
+  const scripted=stage.actor?.items.find(i=>i.system.key===`stage:${s.stage}:omen:${s.omen.index}`&&i.system.scriptEnabled);
+  if(scripted){await runBlockSkill({actor:stage.actor.id,item:scripted.id,targets:[...(game.user.targets??[])].map(t=>t.actor?.id).filter(Boolean)},game.user);return;}
   const {enemy,knights}=roster(),r=s.round;
+  if(!enemy){await chat(routine.name,`<pre>${esc(routine.text)}</pre>`);return;}
   const inGardens=g=>knights.filter(a=>g.includes(a.system.garden));
   const highest=[...knights].sort((a,b)=>b.system.hp.value-a.system.hp.value)[0];
   const highestTargets=highest?[highest]:[];
@@ -108,10 +119,20 @@ export async function executeOmen() {
   await runSteps({actor:null,key:"stage",steps});
 }
 export async function cutRoutine() {
+  if(!roster().enemy)return;
   const s=state(),{enemy,knights}=roster();
   if(s.stage==="blade-dance"&&knights.length) {
     const target=[...knights].sort((a,b)=>gardenDistance(b.system.garden,enemy.system.garden)-gardenDistance(a.system.garden,enemy.system.garden)||b.system.hp.value-a.system.hp.value)[0];
     await attack(null,3+s.round,[target.id],{stage:true,title:"Starving Wolf"});
   }
   if(s.stage==="deep-sea")for(const a of knights)if(a.system.garden===1)await changeHP(a,-(1+s.round));
+}
+
+export async function turnOmen() {
+  const s=state();if(!s.nativeControls||!s.active||s.pending)return;
+  const stage=stageRecord();if(!stage?.actions.length)return;
+  const combat=game.combat,key=`${combat.round}:${combat.turns[combat.turn]?.id}`;
+  if(s.omenTurns?.includes(key))return;
+  s.omenTurns??=[];s.omenTurns.push(key);await saveState(s);
+  await readOmen({allTurns:true});await executeOmen();
 }

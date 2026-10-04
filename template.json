@@ -4,7 +4,8 @@
       "bringer",
       "sheath",
       "embraced",
-      "eclipsed"
+      "eclipsed",
+      "stage"
     ],
     "templates": {
       "base": {
@@ -98,6 +99,13 @@
       "exp": 0,
       "distortion": 0,
       "bouquet": 0
+    },
+    "stage": {
+      "key": "",
+      "description": "",
+      "setText": "",
+      "routines": [],
+      "omen": 0
     }
   },
   "Item": {

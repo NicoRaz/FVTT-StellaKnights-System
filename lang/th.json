@@ -85,5 +85,6 @@
   "Stella.EffectiveDefense": "ค่าที่ใช้จริง",
   "Stella.DefenseHelp": "Defense ปัจจุบันหลังรวมเอฟเฟกต์ ใช้รับการโจมตี",
   "TYPES.Item.flower": "Flower",
-  "TYPES.Item.color": "Color"
+  "TYPES.Item.color": "Color",
+  "TYPES.Actor.stage": "Stage"
 }

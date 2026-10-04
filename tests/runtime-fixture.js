@@ -31,9 +31,16 @@ export class MockCombat {
  getFlag(ns,key){return this.flags[ns]?.[key];}
  async update(data){for(const [key,value]of Object.entries(data))setPath(this,key,value);return this;}
  async activate(){game.combat=this;return this;}
+ _sortCombatants(a,b){return (b.initiative??0)-(a.initiative??0);}
+ async nextTurn(){if(this.turn!==null&&this.turn>=this.turns.length-1)return this.nextRound();return this.update({turn:(this.turn??-1)+1});}
+ async nextRound(){return this.update({round:this.round+1,turn:0});}
+ async previousTurn(){if((this.turn??0)<=0)return this.previousRound();return this.update({turn:this.turn-1});}
+ async previousRound(){return this.update({round:Math.max(1,this.round-1),turn:0});}
+ async rollInitiative(ids,options={}){this.lastInitiativeOptions=options;await this.updateEmbeddedDocuments('Combatant',ids.map((id,n)=>({_id:id,initiative:20-n})));return this;}
  async createEmbeddedDocuments(_type,docs){const created=docs.map(d=>({...d,id:'cb'+(++serial),actor:game.actors.get(d.actorId)}));this.combatants.push(...created);return created;}
  async deleteEmbeddedDocuments(_type,ids){this.combatants=new Collection(...this.combatants.filter(c=>!ids.includes(c.id)));}
  async updateEmbeddedDocuments(_type,updates){for(const u of updates)Object.assign(this.combatants.get(u._id),u);return updates;}
+ async endCombat(){if(this.cancelEnd)return undefined;game.combats.splice(game.combats.indexOf(this),1);game.combat=null;return this;}
  static async create(data){const combat=new this(data);game.combats.push(combat);game.combat=combat;return combat;}
 }
 export async function setup() {
@@ -59,10 +66,17 @@ export async function setup() {
  await loadCatalog();
  const knight=new MockActor('knight'),ally=new MockActor('ally'),enemy=new MockActor('enemy','embraced');
  game.actors.push(knight,ally,enemy);for(const a of game.actors){a.items=new Collection(...[skills[0],...skills.filter(s=>['Rose','Black'].includes(s.group)).slice(0,5)].map((r,i)=>new MockItem(skillDocument(r,i+1))),...crestDocuments(skills).filter(d=>["Black","Rose"].includes(d.name)).map(d=>new MockItem(d)));for(const item of a.items)item.parent=a;}
+ const stage=new MockActor('stage','stage',{key:'none',setText:'',routines:[],omen:0});stage.items=new Collection();game.actors.push(stage);
+ canvas.scene={id:'scene',tokens:[{id:'stage-token',actorId:stage.id}]};
  const actors=[enemy.id,knight.id,ally.id];
  await game.settings.set(ID,'battle',{active:true,round:1,phase:'actions',actors,turn:1,stage:'ragnarok',omenIndex:0,omen:null,pending:null,charged:[],maps:[],markers:[],damage:{},decisive:[],supported:[]});
- return {gm,knight,ally,enemy,rig:values=>queue.push(values),settings};
+ return {gm,knight,ally,enemy,stage,rig:values=>queue.push(values),settings};
 }
 export function user(id){return {id,isGM:false,active:true,name:id};}
 export function flags(message){return message.getFlag(ID,'check');}
 export const getState=battleState;
+
+export function testStage(key='none') {
+ const actor=game.actors.get('stage');const record=JSON.parse(fs.readFileSync(new URL('../data/stages.json',import.meta.url))).find(s=>s.id===key);
+ Object.assign(actor.system,{key,setText:record?.setText??'',routines:structuredClone(record?.actions??[]),omen:0});return actor.id;
+}

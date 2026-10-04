@@ -1,4 +1,4 @@
-import {ID,isEnemy} from './rules.js';
+import {ID,isFighter} from './rules.js';
 export function stellarCombat() {
   const selected=game.combat?.getFlag(ID,'battle')?game.combat:null;
   if(selected?.getFlag(ID,'battle').active)return selected;
@@ -8,15 +8,16 @@ export function battleState() {
   const combat=stellarCombat();
   if(!combat)return foundry.utils.deepClone(game.settings.get(ID,'battle'));
   const s=foundry.utils.deepClone(combat.getFlag(ID,'battle'));
-  s.actors=combat.turns.filter(c=>c.actor).map(c=>c.actor.id);
+  s.actors=combat.turns.filter(c=>c.actor&&isFighter(c.actor)).map(c=>c.actor.id);
   s.round=combat.round??s.round;
-  if(s.phase==='actions')s.turn=combat.turn??s.turn;
+  if(s.nativeControls){s.phase='actions';s.charged=s.chargedRounds?.[s.round]??[];s.combatTurn=combat.turn??0;s.turn=s.actors.indexOf(combat.turns[s.combatTurn]?.actor?.id);}
+  else if(s.phase==='actions')s.turn=combat.turn??s.turn;
   s.combatId=combat.id;return s;
 }
 export async function persistBattle(s) {
   const combat=stellarCombat();
   if(!combat)return game.settings.set(ID,'battle',s);
-  await combat.update({[`flags.${ID}.battle`]:s,round:s.round??0,turn:s.phase==='actions'&&s.turn<s.actors.length?s.turn:null},{stellaPhaseTransition:true});
+  await combat.update({[`flags.${ID}.battle`]:s,round:s.round??0,turn:s.nativeControls?(s.combatTurn??combat.turn??0):s.phase==='actions'&&s.turn<s.actors.length?s.turn:null},{stellaPhaseTransition:true});
   return s;
 }
 export async function ensureCombat(actors,combatId=null) {
@@ -30,7 +31,6 @@ export async function ensureCombat(actors,combatId=null) {
   const missing=actors.filter(a=>!combat.combatants.some(c=>c.actorId===a.id));
   if(missing.length)await combat.createEmbeddedDocuments('Combatant',missing.map(a=>({actorId:a.id,name:a.name,img:a.img,
     sceneId:globalThis.canvas?.scene?.id??null,tokenId:globalThis.canvas?.scene?.tokens?.find(t=>t.actorId===a.id)?.id??null})));
-  await setCombatOrder(combat,actors.map(a=>a.id));
   // Attach first so all subsequent phase updates use this native Combat document.
   await combat.update({[`flags.${ID}.battle`]:{active:false,round:0,phase:'set',actors:actors.map(a=>a.id),turn:0}});
   await combat.activate();return combat;
@@ -40,6 +40,6 @@ export async function setCombatOrder(combat,ids) {
 }
 export async function archiveCombat(combat) {
   const s=combat.getFlag(ID,'battle');if(!s)return;
-  await game.settings.set(ID,'battle',{...s,round:combat.round,turn:combat.turn??s.turn,actors:combat.turns.filter(c=>c.actor).map(c=>c.actor.id),active:false,pending:null,combatId:null});
+  await game.settings.set(ID,'battle',{...s,round:combat.round,turn:combat.turn??s.turn,actors:combat.turns.filter(c=>c.actor&&isFighter(c.actor)).map(c=>c.actor.id),active:false,pending:null,combatId:null});
 }
-export const orderedCombatants=combat=>[...combat.combatants].filter(c=>c.actor).sort((a,b)=>Number(isEnemy(b.actor))-Number(isEnemy(a.actor)));
+export const orderedCombatants=combat=>combat.turns.filter(c=>c.actor);

@@ -5,7 +5,7 @@ out = root / "artifacts"
 out.mkdir(exist_ok=True)
 manifest = json.loads((root / "system.json").read_text())
 with zipfile.ZipFile(out / "stellaknights-v14.zip", "w", zipfile.ZIP_DEFLATED) as archive:
-    for name in ["system.json", "template.json", "README.md", "LICENSE", "LICENSE.txt", "module", "assets", "data", "lang", "styles", "templates"]:
+    for name in ["system.json", "template.json", "README.md", "LICENSE", "LICENSE.txt", "module", "assets", "data", "lang", "styles", "templates", "packs"]:
         entry = root / name
         paths = sorted(entry.rglob("*")) if entry.is_dir() else [entry]
         for path in paths:

@@ -85,5 +85,6 @@
   "Stella.EffectiveDefense": "Effective",
   "Stella.DefenseHelp": "Current Defense after effects, used against attacks.",
   "TYPES.Item.flower": "Flower",
-  "TYPES.Item.color": "Color"
+  "TYPES.Item.color": "Color",
+  "TYPES.Actor.stage": "Stage"
 }

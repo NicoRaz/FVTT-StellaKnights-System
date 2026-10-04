@@ -88,3 +88,20 @@ test('Details and Battle tabs preserve separate scroll positions across rerender
  root.dataset.activeTab='battle';root.scrollTop=300;await StellaActorSheet.switchTab.call(sheet,null,{dataset:{tab:'details'}});
  assert.equal(sheet.scrollPosition,180);assert.equal(sheet.tabScroll.battle,300);
 });
+
+test('Block editor saves typed rows and supports adding, moving and deleting blocks',async()=>{
+ const item={type:'ability',system:{number:0,blocks:[]},async update(changes){for(const [key,value]of Object.entries(changes)){if(key==='system.blocks')this.system.blocks=structuredClone(value);}}};
+ const sheet={item,isEditable:true};await StellaItemSheet.addBlock.call(sheet);await StellaItemSheet.addBlock.call(sheet);
+ await StellaItemSheet.submit.call(sheet,null,null,{object:{'system.blocks.0.op':'damage','system.blocks.0.value':'3','system.blocks.0.face':'2','system.blocks.1.op':'heal'}});
+ assert.equal(item.system.blocks[0].op,'damage');assert.equal(item.system.blocks[0].value,3);assert.equal(item.system.blocks[0].face,2);
+ await StellaItemSheet.moveBlock.call(sheet,null,{dataset:{index:'0',action:'blockDown'}});assert.equal(item.system.blocks[0].op,'heal');
+ await StellaItemSheet.removeBlock.call(sheet,null,{dataset:{index:'1'}});assert.equal(item.system.blocks.length,1);
+});
+test('Use button forwards only locked Foundry targets without an aim dialog',async()=>{
+ const {sheet,actor,items}=fixture();actor.id='hero';const calls=[];
+ game.user={id:'gm',isGM:true,active:true,targets:new Set([{actor:{id:'target'}},{actor:{id:'target'}}])};game.users=[game.user];game.socket={on(){},emit(){}};
+ const {registerSocket}=await import('../module/socket.js');registerSocket(async(op,data)=>{calls.push({op,data});});
+ await StellaActorSheet.use.call(sheet,null,{dataset:{item:items[0].id}});
+ assert.equal(calls.length,1);assert.equal(calls[0].op,'use');assert.deepEqual(calls[0].data.targets,['target']);assert.equal(calls[0].data.directUse,true);
+ assert.equal(StellaActorSheet.DEFAULT_OPTIONS.actions.charge,undefined);
+});

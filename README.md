@@ -21,25 +21,46 @@ Repository สำหรับ v14: [https://github.com/NicoRaz/FVTT-StellaKnight
 
 > Flower/Color Items และ Foundry Combat พร้อมใช้งานในเวอร์ชัน 1.2.0
 
+## เวอร์ชัน 1.3.0
+
+- ใช้ Initiative และ Round/Turn ของ Foundry โดยตรง
+- ต้องมี **Stage Token** ใน Combat ก่อน Begin Combat มี Stage Actor พร้อมชีท Set / Routine / Omen / Skills และ Compendium Stage preset 7 แบบ
+- **Omen ทำงานอัตโนมัติทุกเทิร์น** รวม Enemy และ Stage โดยไม่ทำซ้ำเมื่อ render/update ซ้ำ Stage attacks ทอยและใช้ผลอัตโนมัติ
+- มีปุ่ม **Charge Dice — All** สำหรับ DM เท่านั้น ไม่มีปุ่ม Charge ของผู้เล่น เต๋าที่เหลือข้ามรอบคงอยู่
+- **End Combat** ล้าง Set dice ทุก Skill ของทุกคนใน Combat รวมสกิลสำรองและ Stage Skills ยกเลิก End Combat แล้วเต๋ายังคงอยู่
+- กด **ใช้ Skill** กับ Foundry Targets โดยตรง ไม่มีหน้าต่างเล็ง ไม่เลือกคู่ต่อสู้อัตโนมัติ ไม่ตรวจ Garden, timing, Parent, slot หรือ Set dice เพื่อขวางการกด สกิลที่ต้องเลือกค่าหรือเหตุการณ์เฉพาะโพสต์ข้อความให้ Director ใช้ผลเอง
+- Region Behavior **Garden** ค่า 1–6 ตั้ง Garden ให้ Token ทุกตัวใน Region และอัปเดต Actor ที่มีฟิลด์ Garden เมื่อเข้า/เคลื่อนภายใน หรือเปลี่ยนค่า Behavior
+- **Block Script** ใน Skill Items: เรียงบล็อก ลากสลับ/เพิ่ม/ลบ/ย้ายขึ้นลงได้ ไม่มี JavaScript รองรับ Roll, Attack, Damage, Heal/revive, Add Set dice, Stat bonus, Message, If และ Repeat
+- เปิด Director rulings เป็นค่าเริ่มต้น แก้ loadout ระหว่าง combat และเลือก Skill ข้าม Flower/Color ได้ คง ownership และการป้องกันกดซ้ำ
+- Compendium **Color**: 25 Skills + 6 Parent Items; **Flower**: 28 Skills + 7 Parent Items; **Special**: Knight’s Etiquette; **Stages**: 7 Stage Actors พร้อม Skill Items
+
+## Region Garden และ Block Script
+
+1. สร้าง Scene Region → เพิ่ม Behavior **Garden** → ตั้ง Garden 1–6 เมื่อ Token อยู่ใน Region จะรับค่านั้น Token มีค่าของตัวเอง ส่วน Actor ที่ linked ใช้ค่า Garden ร่วมกัน
+2. เปิด Skill Item → **Block Script** → เปิด Use Block Script เพื่อใช้บล็อกแทนเอฟเฟกต์เดิม → Add Block เลือกคำสั่ง เป้าหมาย และค่า ลากที่ ☷ หรือใช้ ↑/↓ เพื่อเรียงลำดับ
+3. ตัวอย่าง: Roll 2 dice → If total ≥ 5 → Damage จาก Last dice total หรือ Repeat 2 → Heal 1 ให้ผู้ใช้ If/Repeat ใช้กับบล็อกถัดไปหนึ่งบล็อก Repeat สูงสุด 10 ครั้ง
+4. ค่าใช้ Fixed value, Foundry Round หรือ Last dice total ได้ เป้าหมายเลือก Foundry Targets / ผู้ใช้ / All fighters in Combat ส่วน Add Set dice ใช้ Value เป็นจำนวนลูก และ Set die face เป็นช่อง 1–6
+5. Stage Set/Omen Skill Items เปิด Block Script ได้เช่นกัน ระบบใช้ script ของ Item นั้นแทน routine เดิมเมื่อถึงต้น Round/Turn ข้อความ custom ที่ไม่มีบล็อกให้ Director ใช้ผลเอง
+
 ## ใช้ชีท Edit / Play และ Skill Items
 
 > เวอร์ชัน 1.2.1 แยกแท็บ Details / Stellar Battle และแก้การเปิด Sidebar กับการสร้าง Combat สำหรับ Foundry v14
 
 - **Details** แสดงข้อมูลตัวละคร Partner, Wish, ประวัติ และ XP
-- **Stellar Battle** แสดงค่าสถานะปัจจุบัน Color, Flower, Skill loadout และสกิลสำรอง พร้อมปุ่ม Foundry Combat Tracker และ Stage / Arena แต่ละแท็บเก็บตำแหน่งเลื่อนแยกกัน
+- **Stellar Battle** แสดงค่าสถานะปัจจุบัน Color, Flower, Skill loadout และสกิลสำรอง พร้อมปุ่ม Foundry Combat Tracker แต่ละแท็บเก็บตำแหน่งเลื่อนแยกกัน
 
 
 - ชีทเริ่มใน **Play** เพื่อใช้สกิลและปรับทรัพยากรระหว่างเล่น กด **Play → Edit** เพื่อแก้ข้อมูลตัวละครและจัดสกิล แล้วกด **Edit → Play** เมื่อพร้อมเล่น
 - ใน Edit คลิกรูป **Portrait** หรือ **Token** เพื่อเลือกไฟล์ผ่าน Foundry File Browser รูป Token เปลี่ยน Prototype Token; ใช้ **Token settings** สำหรับการตั้งค่าเพิ่มเติม หากเปิดโมดูล **Tokenizer** ที่รองรับ Foundry เวอร์ชันของคุณ จะมีปุ่ม Tokenizer เรียก API `tokenizeActor` ของโมดูล
-- GM กด **Skill Item Library · Import / Open** เพื่อนำเข้าหรือเปิดคลัง 54 Skill Items, 7 Flower Items และ 6 Color Items ใน Item Directory ผู้เล่นอ่านและลาก Item จากคลังได้ ไม่ต้องสร้างใหม่ทีละสกิล
+- กด **Skill Compendiums** เพื่อเปิดคลัง Color / Flower / Special ผู้เล่นลาก Item ลงชีทได้ทันที ไม่ต้อง import ลง World Items
 - ลาก Item จาก Directory หรือ Compendium ลงช่อง **No. 1–6** ใน Edit เพื่อเพิ่มสกิลของ Actor ลากสกิลที่มีอยู่ระหว่างช่องเพื่อสลับหมายเลข หรือปรับ Number บน Item sheet รวมทั้ง Knight’s Etiquette ทุกช่อง หากปลายทางมีสกิล ระบบจะสลับช่องให้
-- ลากลงส่วน **Skill / Custom** เพื่อเก็บในสำรอง (No. 0) สกิลเดิมยังอยู่เมื่อเปลี่ยนชุด Knight’s Etiquette ย้ายช่อง เก็บสำรอง หรือลบได้โดยไม่มีการล็อก และจัด loadout ได้เมื่อไม่มี Battle ที่กำลังดำเนินอยู่
+- ลากลงส่วน **Skill / Custom** เพื่อเก็บในสำรอง (No. 0) สกิลเดิมยังอยู่เมื่อเปลี่ยนชุด Knight’s Etiquette ย้ายช่อง เก็บสำรอง หรือลบได้โดยไม่มีการล็อก และจัด loadout ได้ระหว่าง Battle เมื่อเปิด Director rulings
 - กดหัวข้อ **Skill loadout** เพื่อพับ/ขยาย ชีทเก็บสถานะพับและตำแหน่งเลื่อนขณะอัปเดตหรือเปลี่ยนโหมด
-- เลือก **Flower** และ **Color** โดยลาก Parent Items ลงชีท แต่ละ Parent เก็บ `skillKeys` ของลูก Skill ที่เลือกลงช่องได้ ลาก Skill ลง Item sheet ของ Parent เพื่อเพิ่มรายการลูกได้ สกิลที่อยู่นอก Parent ปัจจุบันเก็บในสำรองได้ แต่ลงช่อง/ใช้ไม่ได้; Knight’s Etiquette ใช้ได้ทุกตัวละครโดยไม่มีการล็อกช่อง
-- **Color Item** กำหนด Endurance, Defense และ Charge; **Flower Item** เพิ่มค่าสถานะตามที่ระบุใน Item (Flower จากหนังสือเริ่มที่ 0 สำหรับค่าสถานะเหล่านี้) เปลี่ยน Parent แล้วคำนวณใหม่และย้ายสกิลที่ใช้ไม่ได้ไปสำรอง
+- เลือก **Flower** และ **Color** โดยลาก Parent Items ลงชีท แต่ละ Parent เก็บ `skillKeys` ของลูก Skill ที่เลือกลงช่องได้ ลาก Skill ลง Item sheet ของ Parent เพื่อเพิ่มรายการลูกได้ ในโหมด Director rulings สกิลนอก Parent ลงช่องและใช้ได้; Knight’s Etiquette ใช้ได้ทุกตัวละครโดยไม่มีการล็อกช่อง
+- **Color Item** กำหนด Endurance, Defense และ Charge; **Flower Item** เพิ่มค่าสถานะตามที่ระบุใน Item (Flower จากหนังสือเริ่มที่ 0 สำหรับค่าสถานะเหล่านี้) เปลี่ยน Parent แล้วคำนวณใหม่; โหมด Director rulings เก็บสกิลเดิมในช่อง ส่วนโหมดกติกาเข้มงวดจะย้ายสกิลที่ไม่ตรงไปสำรอง
 - ชีทแสดงเฉพาะ **Endurance ปัจจุบัน**, **Defense ที่ใช้จริง**, **Charge หลังรวม Round/Stage bonus** และ **Attack bonus** ไม่มีช่อง Base หรือ Garden ค่าที่แสดงใช้ฟังก์ชันเดียวกับการคำนวณใน Combat
 - ปุ่ม **Foundry Combat** เปิด Combat Tracker ของ Foundry ใช้ Combat/Combatant, initiative order, round และ turn ของ Foundry เป็นหลัก ระบบเพิ่มเฟส Set/Charge/Actions/Cut และ Stage routine ผ่าน Combat document เก็บรายละเอียด Stage ใน flags ของ Combat
-- ใช้ **Stage / Gardens** บน Tracker เพื่อเปิด Arena และปรับ Garden ด้วยปุ่ม Set ของ GM Garden ยังใช้กับระยะและกติกา แต่ไม่มีบนชีท Bringer
+- ใช้ **Director controls** บน Foundry Combat Tracker เพื่อปรับ Round, Garden, Endurance, Bouquet, Medals และ Distortion หรือยกเลิก check / จบ battle Garden ยังใช้กับระยะและกติกา แต่ไม่มีบนชีท Bringer
 
 ## เริ่มเล่น
 
@@ -48,31 +69,26 @@ Repository สำหรับ v14: [https://github.com/NicoRaz/FVTT-StellaKnight
 - กด **สร้างชุดสกิล** เลือก Flower และ Color Items แล้วเลือกหกสกิลที่ไม่ซ้ำลงช่อง 1–6 ใช้ค่าสถานะจาก Parent Items โดยเลือกว่าจะใส่ Knight’s Etiquette หรือไม่ก็ได้
 - สกิลที่เปลี่ยนออกจะเก็บไว้ในช่อง 0 เป็นสกิลสำรองตามกฎแคมเปญ จัดช่องด้วยการลากสลับหรือแก้ Number บน Item sheet ได้
 - สร้าง **Embraced** หรือ **Eclipsed** เป็นศัตรูและจัดชุดสกิลแบบเดียวกัน Eclipsed มีคู่ Sheath ได้ ส่วน Embraced ไม่มีคู่ตามกฎ
-- เปิด **Stellar Battle** จากปุ่มบนแผ่นหรือจากแถบเครื่องมือ Token ระบบมีตัวติดตามการต่อสู้ของตัวเองในหน้าต่าง Arena of Wishes ใช้หน้าต่างนี้ในการดำเนินเทิร์น
+- เปิด Foundry Combat Tracker จากปุ่มบนชีทหรือแถบเครื่องมือ Token ใช้ Combat ของ Foundry สำหรับ encounter, round และ turn
 
 ## ฉากและ Bouquet
 
-กด **Start Session** เลือก Bringers ของทุกคู่ (รวม Eclipsed หากเล่นแบบ Irregular) แต่ละคู่ต้องเชื่อม Sheath แล้ว ปุ่ม **Next Scene / Chapter** เดินผ่าน Prologue → Chapter One → Chapter Two → Interlude → Final Chapter → Curtain Call → Cleanup ฉากของแต่ละบทจะเดินทีละคู่
+Director เริ่มและเดินฉากผ่าน API `game.stellaknights.request("session-start", {actors: [actorId]})` และ `game.stellaknights.request("session-next", {})` ได้ ลำดับ Prologue → Chapter One → Chapter Two → Interlude → Final Chapter → Curtain Call → Cleanup ยังเก็บใน World แต่ไม่มีหน้าต่าง Arena สำหรับบังคับลำดับฉาก
 
-เปิดหน้าต่าง Bouquet และกด +1 ที่คู่ซึ่งกำลังแสดง ไม่ต้องเปลี่ยน Ownership ของตัวละครเพื่อให้ผู้ชมมอบ Bouquet ได้ ระหว่าง Chapter One/Two/Interlude จะรับ Bouquet ได้เฉพาะคู่ในฉากปัจจุบัน
-
-ตามกฎ p.114 ไม่มีผู้ชมใน Final Chapter จึงไม่แจก Bouquet ใหม่ระหว่างต่อสู้เป็นค่าเริ่มต้น หากกลุ่มใช้ house rule ให้ GM เปิด **Allow Bouquets during Stellar Battle** ใน System Settings การใช้ Bouquet ที่สะสมไว้ยังทำได้ตามปกติ
-
-**Reference Tables** แสดงตาราง Hope/Despair, Story, Other Worlds, Wish, Personality, Prompts, Time, Location, Schools, Topics และ Sample Synopses พร้อมเต๋าสองลูกและเลขหน้า รูปแบบตารางเดิม D6/D66/ตารางแถว-คอลัมน์ต้องอ่านเลือกผลตามหัวตาราง ปุ่ม **สุ่มฉาก** สุ่มเวลาและสถานที่ให้โดยตรง
+เปิดหน้าต่าง Bouquet เพื่อให้ผู้ชมแจก +1 เมื่อ Director อนุญาต Director rulings อนุญาตระหว่าง battle และนอกคู่ที่อยู่ในฉาก ปิดโหมดนี้เพื่อใช้ข้อจำกัดจากหนังสือและตั้งค่า Allow Bouquets during Stellar Battle ตามเดิม
 
 ## การต่อสู้
 
-1. เพิ่ม Combatants ใน Foundry Combat Tracker แล้ว GM กด **Begin Combat** เพื่อเลือก Stage หนึ่งใน 7 แบบ หรือกด **เริ่มการต่อสู้** จาก Stage / Gardens ระบบเริ่ม Round 1 / Set และใช้ Set Routine รวมทั้งโบนัส Endurance/Charge/Attack ของศัตรูตามจำนวน Bringers
-2. จัด Garden 1–6 ใน Stage / Gardens ก่อนเริ่ม Actions ศูนย์กลางสนามเข้าไม่ได้ ใช้ initiative ของ Foundry Combat Tracker เพื่อจัดลำดับ Bringers; ศัตรูอยู่ก่อนเสมอ
-3. GM กด **Next phase / turn** ใน Foundry Combat Tracker เข้า Charge ผู้เล่นแต่ละคนกด **ทอย Charge** จากแผ่นหรือหน้าต่าง Arena แล้วใช้ปุ่มบนการ์ด Chat เพื่อปรับ/ทอยใหม่ก่อนกด **ยืนยันผล** ผลแต่ละลูกถูกเพิ่มลงช่องสกิลที่ตรงกับหน้าเต๋า ลูกที่เหลือจากรอบก่อนยังคงอยู่
-4. เมื่อผู้ที่ยังไม่หมดสภาพ Charge ครบ GM เดินเข้า Actions ใช้สกิลจากแผ่น ผู้เล่นเลือกเป้าหมายและตัวเลือกตามข้อความสกิล
-5. การโจมตีประกาศเป็นการ์ด **Before attack** ก่อนทอย เพื่อใช้สกิลแทรกและ Dice Boost จากนั้นเจ้าของตัวละครหรือ GM กด **ทอย** สกิลหลังทอยและก่อนรับความเสียหายใช้ได้ก่อนกด **ยืนยันผล** ระบบนับลูกที่ ≥ Defense เป็นความเสียหาย
-6. GM เดินเทิร์นถัดไปเพื่อใช้ Action Routine ที่ประกาศเป็น Omen หากเกิดการโจมตีของ Stage ต้องยืนยันการ์ด Chat ก่อนเดินเทิร์นต่อ ถ้า Stage ให้ศัตรูใช้สกิลเพิ่ม GM เลือกสกิลที่ได้รับ Set die แล้วใช้สกิลนั้นบนแผ่นศัตรูก่อนเดินต่อ
-7. เมื่อทุกคนแสดงแล้วเข้าสู่ Cut และเดินต่อไปยังรอบใหม่ ไม่มี initiative แบบทอยเต๋า เพราะลำดับถูกตกลงร่วมกันตามหนังสือ
+1. ลาก Stage Actor จาก Compendium **Stages** ลง World หรือสร้าง Actor ชนิด Stage แล้ว Load Stage preset วาง Stage Token บน Scene และเพิ่มเข้า Combat พร้อมตัวละคร
+2. ทอย Initiative ใน Foundry หรือใส่คะแนนเอง DM กด Begin Combat ระบบอ่าน Set/Omen จาก Stage Token โดยไม่มีหน้าต่างเลือก Stage
+3. ที่ต้น Round DM กด Charge Dice — All เพื่อแจกเต๋าให้ fighters ที่ Endurance มากกว่า 0 ไม่มีปุ่ม Charge ของผู้เล่น
+4. ใช้ Next/Previous Turn/Round ของ Foundry ตามปกติ Round ใหม่เรียก Set และทุกเทิร์นเรียก Omen อัตโนมัติ ลำดับ Omen วนเมื่อครบรายการ
+5. ผู้เล่นล็อก Token เป้าหมายด้วย Foundry Targets แล้วกด Use บน Skill การโจมตีผู้เล่นยังใช้การ์ด Before attack / Roll / Resolve เพื่อปรับผลได้ แต่ไม่ตรวจระยะ Garden
+6. ยืนยัน End Combat เพื่อล้าง Set dice ทั้งหมด การย้อน Turn/Round ไม่ย้อนความเสียหายหรือทรัพยากรที่ผ่านมา
 
-การยืนยันความเสียหายดู Garden และ Defense ขณะนั้น ถ้าเป้าหมายออกจากระยะ การโจมตีของตัวละครจะทำความเสียหายเป็น 0 Stage โจมตีได้ทุกสวนตามเงื่อนไขของ Routine และใช้ชุดเต๋าร่วมกันเมื่อโจมตีหลายเป้าหมาย
+Stage preset เดิมใช้ automation ของหนังสือ เมื่อ Omen ให้ศัตรูเลือกสกิลหรือเลือกการเคลื่อนที่ ระบบแจ้งใน Chat ให้ Director ตัดสินและกดใช้เอง หากใช้ Block Script ระบบเรียกบล็อกแทน routine เดิม
 
-Endurance ไม่ติดเพดานค่าเริ่มต้น; ค่าสูงสุดบนแผ่นคือค่าเริ่มต้นเพื่อใช้ตรวจเหรียญ Unwavering Knight Defense อยู่ในช่วง 1–6 เสมอ ตัวละคร Endurance 0 ใช้สกิลทั่วไปหรือฟื้นด้วยการรักษาปกติไม่ได้ แต่ยังสนับสนุนด้วย Bouquet และใช้ Distortion ได้
+Endurance ไม่ติดเพดานค่าเริ่มต้น Defense อยู่ในช่วง 1–6 ข้อกำหนดทางหนังสือสำหรับ Endurance 0 ให้ Director ตัดสิน ปุ่ม Skill ไม่ล็อกการใช้งาน
 
 ## Bouquet และจังหวะสกิล
 
@@ -82,7 +98,7 @@ Endurance ไม่ติดเพดานค่าเริ่มต้น; �
 - เลือกผู้จ่ายก่อน ระบบส่งข้อเสนอเข้า Chat **เจ้าของตัวละครผู้รับหรือ GM กด Accept support** จึงจะหักแต้มและใช้เอฟเฟกต์ ป้องกันการช่วยที่ผู้รับไม่ยินยอมและการหักแต้มซ้ำจากการกดซ้ำ
 - สกิล Reaction ใช้ผ่านปุ่ม **ใช้สกิล** บนแผ่น ในหน้าต่างที่ตรงกับกฎ เช่น Before Attack / After Roll / After Damage สกิลตอบสนองต่อ damage ใช้ก่อนเกิดเหตุการณ์ถัดไปตามการตัดสินของ Director
 - การเคลื่อนที่ระบุ Garden ที่เดินเข้าทีละช่อง เช่น จาก 1 ไป 3 ใช้ `2,3`; เดินจาก 1 ไป 5 ใช้ `6,5` สำหรับสกิลที่ระบุหลายก้าว ผลต่างระยะสวนอย่างเดียวไม่แทนจำนวนก้าวที่เดิน
-- ผลที่ต้องเลือกความยินยอมหรือทิศทางของผู้เล่นอื่น ให้ Director ยืนยันกับผู้เล่นนั้นก่อนเลือกในหน้าต่าง ระบบตรวจข้อจำกัดด้านกฎ แต่ไม่ได้สร้างกล่องยืนยันแยกให้ทุกผลของสกิล
+- ผลที่ต้องเลือกความยินยอมหรือทิศทางของผู้เล่นอื่น ให้ Director ยืนยันกับผู้เล่นนั้นก่อนเลือกในหน้าต่าง Director สามารถข้ามจังหวะและจำนวนครั้งที่ใช้ผ่านโหมด Director rulings ได้; Reaction ที่แก้ผล check ยังต้องมี check ให้แก้
 - **Cosmos Order** แจ้งผู้รับให้เลือกและลบ Set die ด้วยปุ่ม −; เป็นการเลือกของผู้รับตามกฎ ไม่ใช่การสุ่มลบ
 - **Around the Cosmos** รองรับการเลือกเส้นทางรายคน; ถ้าหลายคนเริ่มอยู่สวนเดียวกันใช้ path ร่วมกันได้
 - **Floral Ring** เก็บ Flame Counter กดปุ่ม Flame เพื่อเลือกโต้กลับเมื่อเพิ่งได้รับความเสียหายจากตัวละคร สามารถไม่โต้กลับได้
@@ -92,7 +108,7 @@ Endurance ไม่ติดเพดานค่าเริ่มต้น; �
 
 **Immortal Life** เพิ่ม Distortion 1 และฟื้น Endurance เท่าผลรวม 2d6 รวมถึงชุบจาก 0 ได้ **Atypia** เพิ่ม Distortion 1, ฟื้น 4, เพิ่ม Attack ครั้งถัดไป 3 ลูก และทอยหน้าหนึ่งซ้ำจนไม่เป็นหนึ่ง เมื่อถึง Distortion 3 ระบบแจ้งว่าต้องเป็น Eclipsed ในเซสชันถัดไป ไม่เปลี่ยน Actor type กลางการต่อสู้
 
-หลังการต่อสู้สิ้นสุด GM กด **มอบเหรียญรางวัล** แล้วเลือกผู้ที่สนทนากับอัศวินคนอื่น ระบบรวมเหรียญ Victory, Decisive, Unwavering, Exemplary และ Collaborative และป้องกันการมอบซ้ำใน battle เดียว Wish Tier 1–5 ต้องการ 6/12/18/24/30 เหรียญ; Tier 6–10 ไม่ระบุจำนวนในหนังสือ
+หลังการต่อสู้สิ้นสุด GM ใช้ Director controls ปรับ Medals ตามผลการเล่น Victory, Decisive, Unwavering, Exemplary และ Collaborative ให้ Director ตัดสินจำนวนเอง Wish Tier 1–5 ต้องการ 6/12/18/24/30 เหรียญ; Tier 6–10 ไม่ระบุจำนวนในหนังสือ
 
 การเปลี่ยนบทบาทเป็น Eclipsed, การเข้าร่วม Covenant Council และการตัดสินว่า Wish สำเร็จเป็นการตัดสินเชิงเรื่องราวของ Director ปรับ Actor/Medals/Distortion หลังเหตุการณ์ตามหนังสือ ตัวละครและสกิลสำรองคงอยู่สำหรับเซสชันถัดไป
 
@@ -107,7 +123,7 @@ Endurance ไม่ติดเพดานค่าเริ่มต้น; �
 ## Validation / ขอบเขต
 
 - ตรวจ manifest, syntax/imports, JSON, Handlebars templates และ handler ของทั้ง 54 สกิล
-- Node tests ครอบคลุมการโจมตีหลายครั้ง, consent ของ Bouquet, จำกัดการใช้/การกดซ้ำ, HP/Defense, Garden, Charge ข้ามรอบ, Distortion, สกิลทั้งหมด, 33 Action routines และ session/campaign workflow
+- 82 Node tests ครอบคลุมการโจมตีหลายครั้ง, consent ของ Bouquet, จำกัดการใช้/การกดซ้ำ, HP/Defense, Garden, Charge ข้ามรอบ, Distortion, สกิลทั้งหมด, 33 Action routines และ session/campaign workflow
 - Chromium ตรวจ static sheet layout แสดงหกสกิลและไม่มี horizontal overflow ภาพ preview เป็น layout preview ไม่ใช่ภาพจาก Foundry
 - **ยังไม่ได้ทดสอบกับ Foundry v14 runtime จริง** เนื่องจากไม่มีตัวโปรแกรม/เซิร์ฟเวอร์ใน environment ใช้ API documentation v14.368 เป็นแหล่งอ้างอิง ต้องตรวจการโหลด World, sheets, socket หลายผู้เล่น และ core migration ใน Foundry ที่ติดตั้งจริงก่อนเริ่มเกมหลัก
 - Socket ตรวจ ownership/GM และ serialize shared writes เหมาะกับผู้ร่วมเล่นที่เชื่อใจกันตามโมเดลของ Foundry world socket ไม่ใช่ขอบเขตความปลอดภัยสำหรับผู้เล่นที่จงใจปลอม socket payload
@@ -117,6 +133,7 @@ Endurance ไม่ติดเพดานค่าเริ่มต้น; �
 
 ```sh
 npm ci
+npm run build:packs
 npm run check
 npm test
 ```

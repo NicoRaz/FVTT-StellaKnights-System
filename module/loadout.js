@@ -1,4 +1,4 @@
-import {state} from "./helpers.js";
+import {state,directorMode} from "./helpers.js";
 // Slot changes are shared by drag-and-drop and the Item sheet.
 export function slotUpdates(items, item, number) {
   number=Number(number);
@@ -10,5 +10,5 @@ export function slotUpdates(items, item, number) {
   return updates;
 }
 export function assertLoadoutEditable() {
-  if(state().active)throw Error("Finish the battle before changing the loadout");
+  if(!directorMode()&&state().active)throw Error("Finish the battle before changing the loadout");
 }

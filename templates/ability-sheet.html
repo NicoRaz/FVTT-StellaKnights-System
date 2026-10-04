@@ -20,6 +20,19 @@
   <label>{{localize "Stella.Effect"}}<textarea name="system.effect" rows="12">{{system.effect}}</textarea></label>
   <div class="stella-fields"><label>Parent Item type<input name="system.parentType" value="{{system.parentType}}"></label><label>Parent Item key<input name="system.parentKey" value="{{system.parentKey}}"></label></div>
   <label>{{localize "Stella.Word"}}<textarea name="system.word" rows="3">{{system.word}}</textarea></label>
+  <details open><summary>Block Script</summary>
+    <label><input type="checkbox" name="system.scriptEnabled" {{checked system.scriptEnabled}}>Use Block Script instead of built-in effects</label>
+    <p>Execute top to bottom when Use is clicked. Targets come from Foundry Targets; no Garden or timing checks.</p>
+    {{#each blocks}}<fieldset class="skill-block" data-block-index="{{@index}}"><legend><span class="block-handle" draggable="true" data-block-index="{{@index}}">☷ Block {{incremented @index}}</span></legend>
+      <div class="stella-fields"><label>Action<select name="system.blocks.{{@index}}.op">{{selectOptions ../blockOps selected=op}}</select></label>{{#unless isChat}}<label>Value<input type="number" name="system.blocks.{{@index}}.value" min="-100" max="100" value="{{value}}"></label>{{/unless}}</div>
+      <div class="stella-fields">{{#if useSource}}<label>Value from<select name="system.blocks.{{@index}}.source">{{selectOptions ../blockSources selected=source}}</select></label>{{/if}}<label>Apply to<select name="system.blocks.{{@index}}.target">{{selectOptions ../blockTargets selected=target}}</select></label></div>
+      {{#if isModifier}}<div class="stella-fields"><label>Stat<select name="system.blocks.{{@index}}.stat">{{selectOptions ../blockStats selected=stat}}</select></label><label>Duration<select name="system.blocks.{{@index}}.duration">{{selectOptions ../blockDurations selected=duration}}</select></label></div>{{/if}}
+      {{#if isCharge}}<label>Set die face (Add Set dice block)<input name="system.blocks.{{@index}}.face" type="number" min="1" max="6" value="{{face}}"></label>{{/if}}
+      {{#if isChat}}<label>Message<input name="system.blocks.{{@index}}.text" value="{{text}}"></label>{{/if}}
+      <button type="button" data-action="blockUp" data-index="{{@index}}">↑</button><button type="button" data-action="blockDown" data-index="{{@index}}">↓</button><button type="button" data-action="removeBlock" data-index="{{@index}}">Remove</button>
+    </fieldset>{{/each}}
+    <button type="button" data-action="addBlock">Add Block</button>
+  </details>
   <details><summary>{{localize "Stella.Custom"}}</summary><p>Catalog effects use their built-in rules. For a new skill, leave the key empty and enter its Attack dice / movement below. The Director applies other custom effects.</p><label>Rule key<input name="system.key" value="{{system.key}}"></label><label>Attack dice<input name="system.attackDice" type="number" min="0" max="99" value="{{system.attackDice}}"></label><label>Movement maximum<input name="system.move" type="number" min="0" max="6" value="{{system.move}}"></label></details>
   {{/if}}
 </div>

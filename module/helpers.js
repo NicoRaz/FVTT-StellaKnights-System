@@ -37,3 +37,7 @@ export function openSidebarTab(tab) {
   ui.sidebar.expand();
   ui.sidebar.changeTab(tab,'primary');
 }
+
+// Table rulings remain with the Director; document permissions still apply.
+export const directorMode = () => game.settings.get(ID,"directorMode") === true;
+export const directorOverride = user => directorMode() && !!user?.isGM;

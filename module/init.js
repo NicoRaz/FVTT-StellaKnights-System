@@ -2,28 +2,35 @@
 import {StellaItemSheet} from "./item-sheet.js";
 import {StellaActorSheet} from "./actor-sheet.js";
 import {BouquetDialog} from "./bouquet-dialog.js";
-import {BattlePanel,supportDialog} from "./battle-panel.js";
-import {FighterData,SheathData,AbilityData,CrestData} from "./data-models.js";
+import {supportDialog} from "./support-dialog.js";
+import {directorControls} from "./director-controls.js";
+import {FighterData,SheathData,AbilityData,CrestData,StageData} from "./data-models.js";
 import {loadCatalog,skills} from "./library.js";
 import {registerSocket,request} from "./socket.js";
-import {execute} from "./engine.js";
-import {ID} from "./rules.js";
-import {notifyError,state,t,openSidebarTab} from "./helpers.js";
+import {execute,clearCombatDice} from "./engine.js";
+import {ID,isFighter} from "./rules.js";
+import {notifyError,state,t,openSidebarTab,currentActors} from "./helpers.js";
 import {StellaCombat} from "./combat.js";
 import {archiveCombat,ensureCombat,stellarCombat,persistBattle} from "./combat-state.js";
 import {crestDocuments,crestItems,syncCrest} from "./crest.js";
-let battlePanel,bouquetDialog;
+import {StageActorSheet} from "./stage-actor.js";
+import {registerGardenRegion} from "./garden-region.js";
+let bouquetDialog;
 Hooks.once("init",()=>{
+  registerGardenRegion();
   CONFIG.Combat.documentClass=StellaCombat;
-  CONFIG.Actor.dataModels={...CONFIG.Actor.dataModels,bringer:FighterData,sheath:SheathData,embraced:FighterData,eclipsed:FighterData};
+  CONFIG.Combat.initiative??={};CONFIG.Combat.initiative.formula??="1d20";
+  CONFIG.Actor.dataModels={...CONFIG.Actor.dataModels,stage:StageData,bringer:FighterData,sheath:SheathData,embraced:FighterData,eclipsed:FighterData};
   CONFIG.Item.dataModels={...CONFIG.Item.dataModels,ability:AbilityData,flower:CrestData,color:CrestData};
   foundry.documents.collections.Actors.registerSheet(ID,StellaActorSheet,{types:["bringer","sheath","embraced","eclipsed"],makeDefault:true});
+  foundry.documents.collections.Actors.registerSheet(ID,StageActorSheet,{types:["stage"],makeDefault:true});
   foundry.documents.collections.Items.registerSheet(ID,StellaItemSheet,{types:["ability","flower","color"],makeDefault:true});
   game.settings.register(ID,"battle",{scope:"world",config:false,type:Object,default:{active:false,round:0,phase:"set",actors:[],charged:[],markers:[],maps:[]}});
   game.settings.register(ID,"schemaVersion",{scope:"world",config:false,type:Number,default:0});
   game.settings.register(ID,"session",{scope:"world",config:false,type:Object,default:{active:false,phase:"prologue",pairs:[],cursor:0}});
+  game.settings.register(ID,"directorMode",{name:"Director rulings",hint:"Allow loadout edits during combat and flexible encounters. The Director can override turn and Skill usage limits; ownership and pending-check protection remain active.",scope:"world",config:true,type:Boolean,default:true});
   game.settings.register(ID,"allowBattleBouquets",{name:"Allow Bouquets during Stellar Battle",hint:"House rule (p.114). By default there is no Audience in the Final Chapter.",scope:"world",config:true,type:Boolean,default:false});
-  game.stellaknights={request,openCombat:()=>openSidebarTab("combat"),openBattle:()=>{battlePanel??=new BattlePanel();battlePanel.render(true);},
+  game.stellaknights={request,openCombat:()=>openSidebarTab("combat"),openDirectorControls:directorControls,
     distributeBouquet:()=>{bouquetDialog??=new BouquetDialog();bouquetDialog.render(true);},
     BouquetDialog:[],getBattle:state};
   // The upstream localization helpers remain available to user-authored templates.
@@ -40,6 +47,7 @@ async function migrateWorld() {
   // Foundry handles the data -> system / permission -> ownership core migration.
   // Fix the original sheet's incorrect karma path, and recognize its basic skill.
   for(const a of game.actors) {
+    if(a.type==="stage")continue;
     const updates=[];
     const selected=crestItems(a);
     if(a.type!=="sheath") {
@@ -63,24 +71,30 @@ async function migrateWorld() {
   await game.settings.set(ID,"schemaVersion",2);
 }
 function refreshSheets(){for(const actor of game.actors)if(actor.sheet?.rendered)actor.sheet.render();}
-function refreshPanels(){if(battlePanel?.rendered)battlePanel.render({force:true});if(bouquetDialog?.rendered)bouquetDialog.render({force:true});}
+function refreshPanels(){if(bouquetDialog?.rendered)bouquetDialog.render({force:true});}
 Hooks.on("updateActor",refreshPanels);
 for(const hook of ["createItem","updateItem","deleteItem"])Hooks.on(hook,async (item,options)=>{
   refreshPanels();
   if(!options?.stellaCrestChange&&game.users.filter(u=>u.active&&u.isGM).sort((a,b)=>a.id.localeCompare(b.id))[0]?.id===game.user.id&&item.parent&&["flower","color"].includes(item.type))await syncCrest(item.parent,{adjustHP:true});
 });
-Hooks.on("updateCombat",()=>{
+Hooks.on("updateCombat",(combat,changes,options)=>{
+  if(!options?.stellaPhaseTransition&&combat.getFlag(ID,"battle")?.active&&('round' in changes||'turn' in changes)&&game.users.filter(u=>u.active&&u.isGM).sort((a,b)=>a.id.localeCompare(b.id))[0]?.id===game.user.id)request("native-sync",{combat:combat.id}).catch(notifyError);
   refreshPanels();
   refreshSheets();
 });
-Hooks.on("deleteCombat",async combat=>{if(game.user.isGM)await archiveCombat(combat);refreshPanels();refreshSheets();});
+Hooks.on("deleteCombat",async combat=>{if(game.users.filter(u=>u.active&&u.isGM).sort((a,b)=>a.id.localeCompare(b.id))[0]?.id===game.user.id){await clearCombatDice(combat.combatants.filter(c=>c.actor).map(c=>c.actor));await archiveCombat(combat);}refreshPanels();refreshSheets();});
 Hooks.on("renderCombatTracker",(_app,html)=>{
   const s=state();if(!s.combatId||game.combat?.id!==s.combatId)return;
   const root=html instanceof HTMLElement?html:html[0];if(!root)return;
   const controls=document.createElement('div');controls.className='stella-combat-controls';
-  const label=document.createElement('span');label.textContent=`${s.phase} · Round ${s.round}`;controls.append(label);
-  if(game.user.isGM&&s.active){const next=document.createElement('button');next.type='button';next.textContent='Next phase / turn';next.addEventListener('click',async()=>{try{await game.combat.nextTurn();}catch(e){notifyError(e);}});controls.append(next);}
-  const arena=document.createElement('button');arena.type='button';arena.textContent='Stage / Gardens';arena.addEventListener('click',()=>game.stellaknights.openBattle());controls.append(arena);
+  const label=document.createElement('span');label.textContent=`Round ${s.round}`;controls.append(label);
+  if(game.user.isGM&&s.active){
+    const charge=document.createElement('button');charge.type='button';charge.title='Roll and allocate immediately. Use individual Charge checks for Bouquet reactions.';charge.textContent=`Charge Dice — All (Round ${s.round})`;
+    const fighters=currentActors().filter(a=>isFighter(a)&&a.system.hp.value>0);
+    charge.disabled=!!s.pending||!fighters.some(a=>!s.charged?.includes(a.id));
+    charge.addEventListener('click',async()=>{charge.disabled=true;try{await request('charge-all',{combat:game.combat.id});}catch(e){notifyError(e);}finally{ui.combat?.render({force:true});}});controls.append(charge);
+  }
+  if(game.user.isGM){const director=document.createElement('button');director.type='button';director.textContent='Director controls';director.addEventListener('click',async()=>{try{await directorControls();}catch(e){notifyError(e);}});controls.append(director);}
   root.prepend(controls);
 });
 Hooks.on("createActor",refreshPanels);
@@ -88,7 +102,7 @@ Hooks.on("deleteActor",refreshPanels);
 Hooks.on("updateSetting",setting=>{if([`${ID}.battle`,`${ID}.session`].includes(setting.key)){refreshPanels();refreshSheets();}});
 Hooks.on("getSceneControlButtons",controls=>{
   const tokens=controls.tokens;if(!tokens)return;
-  tokens.tools.stellaBattle={name:"stellaBattle",title:t("Battle"),icon:"fa-solid fa-fan",order:90,button:true,onChange:()=>game.stellaknights.openBattle()};
+  tokens.tools.stellaBattle={name:"stellaBattle",title:t("Battle"),icon:"fa-solid fa-fan",order:90,button:true,onChange:()=>game.stellaknights.openCombat()};
   tokens.tools.stellaBouquet={name:"stellaBouquet",title:t("BouquetDialog"),icon:"fa-solid fa-seedling",order:91,button:true,onChange:()=>game.stellaknights.distributeBouquet()};
 });
 Hooks.on("renderChatMessageHTML",(message,html)=>{

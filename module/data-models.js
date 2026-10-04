@@ -32,6 +32,7 @@ export class AbilityData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {type: str(), class: str(), timing: str("Your Turn"), word: str(), effect: str(),
       charge: num(), number: num(0, 0, 6), key: str(), parentType: str(), parentKey: str(), page: num(), timingKey: str("your-turn"),
+      scriptEnabled:bool(),blocks:new f.ArrayField(schema({op:str("roll"),value:num(1,-100,100),face:num(1,1,6),source:str("fixed"),target:str("targets"),text:str(),stat:str("attack"),duration:str("round")}),{initial:[]}),
       attackDice: num(0, 0, 99), move: num(0, 0, 6), uses: new f.ObjectField({initial: {}})};
   }
 }
@@ -41,4 +42,8 @@ export class CrestData extends foundry.abstract.TypeDataModel {
     return {key:str(),description:str(),stats:schema({hp:num(),defense:num(0,0,6),charge:num()}),
       skillKeys:new f.ArrayField(str(),{initial:[]})};
   }
+}
+
+export class StageData extends foundry.abstract.TypeDataModel {
+  static defineSchema(){return {garden:num(1,1,6),key:str(),description:str(),setText:str(),omen:num(),routines:new f.ArrayField(schema({name:str(),text:str()}),{initial:[]})};}
 }

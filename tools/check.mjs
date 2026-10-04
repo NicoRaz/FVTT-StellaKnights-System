@@ -4,6 +4,7 @@ import {execFileSync} from 'node:child_process';
 import Handlebars from 'handlebars';
 const manifest=JSON.parse(fs.readFileSync('system.json'));
 if(manifest.id!=='stellaknights'||manifest.compatibility.minimum!=='14')throw Error('Invalid manifest');
+for(const pack of manifest.packs??[])if(!['Item','Actor'].includes(pack.type)||!fs.existsSync(path.join(pack.path,'CURRENT')))throw Error('Missing Item compendium '+pack.name);
 for(const file of [...manifest.esmodules,...manifest.styles,...manifest.languages.map(l=>l.path),manifest.license])if(!fs.existsSync(file))throw Error('Missing '+file);
 for(const file of fs.readdirSync('module').filter(f=>f.endsWith('.js'))){
  execFileSync(process.execPath,['--check',path.join('module',file)]);

@@ -35,7 +35,7 @@
   </details>
   </section>
   <section id="stella-battle-panel-{{actor.id}}" data-sheet-panel="battle" role="tabpanel" aria-labelledby="stella-battle-{{actor.id}}" {{#unless battleTab}}hidden{{/unless}}>
-    <div class="stella-toolbar"><button type="button" data-action="battle">Foundry Combat Tracker</button><button type="button" data-action="arena">Stage / Arena</button></div>
+    <div class="stella-toolbar"><button type="button" data-action="battle">Foundry Combat Tracker</button></div>
       {{#if fighter}}<div class="stella-stats">
         <label>{{localize "Stella.Hp"}}<input type="number" name="system.hp.value" min="0" value="{{system.hp.value}}"></label>
         <label>{{localize "Stella.Defense"}}<output class="stella-stat">{{derivedDefense}}</output></label>
@@ -51,9 +51,9 @@
       {{else}}<p>Color: {{system.details.crest.color}} · Flower: {{system.details.crest.flower}}</p>{{/if}}
     </div>
   {{#if fighter}}
-    <div class="stella-toolbar"><button class="edit-only" type="button" data-action="setup">{{localize "Stella.Setup"}}</button><button type="button" data-action="charge">{{localize "Stella.RollCharge"}}</button>{{#unless enemy}}<button type="button" data-action="life">Immortal Life</button><button type="button" data-action="atypia">Atypia</button>{{/unless}}<button type="button" data-action="flame">Flame ({{system.flames}})</button><label class="stella-inline"><input type="checkbox" name="system.reportReroll" {{checked system.reportReroll}}>Session report re-roll</label></div>
-    <details data-section="loadout" {{#if sections.loadout}}open{{/if}}><summary>Skill loadout · No. 1–6</summary><p class="edit-only">Drag Skill Items here to assign a number. Drag between any slots to swap, including Knight’s Etiquette.</p><button class="edit-only" type="button" data-action="library">Skill Item Library{{#if canImport}} · Import / Open{{/if}}</button>
-    <details class="edit-only"><summary>Skills allowed by Flower / Color</summary><ul>{{#each availableSkills}}<li class="item" draggable="true" data-world-item-id="{{id}}">{{name}}</li>{{else}}<li>Import the library and select Flower / Color Items.</li>{{/each}}</ul></details>
+    <div class="stella-toolbar"><button class="edit-only" type="button" data-action="setup">{{localize "Stella.Setup"}}</button>{{#unless enemy}}<button type="button" data-action="life">Immortal Life</button><button type="button" data-action="atypia">Atypia</button>{{/unless}}<button type="button" data-action="flame">Flame ({{system.flames}})</button><label class="stella-inline"><input type="checkbox" name="system.reportReroll" {{checked system.reportReroll}}>Session report re-roll</label></div>
+    <details data-section="loadout" {{#if sections.loadout}}open{{/if}}><summary>Skill loadout · No. 1–6</summary><p class="edit-only">Drag Skill Items here to assign a number. Drag between any slots to swap, including Knight’s Etiquette.</p><button class="edit-only" type="button" data-action="library">Skill Compendiums</button>
+    <details class="edit-only"><summary>World Skill Items</summary><ul>{{#each availableSkills}}<li class="item" draggable="true" data-world-item-id="{{id}}">{{name}}</li>{{else}}<li>Open Skill Compendiums to drag Color, Flower and Special Items onto this sheet.</li>{{/each}}</ul></details>
     <div class="set-ability">
       {{#each slots}}
       <article class="ability item" data-slot="{{number}}" data-item-id="{{item.id}}" {{#if item}}draggable="true"{{/if}}>

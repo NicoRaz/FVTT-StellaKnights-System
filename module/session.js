@@ -1,5 +1,5 @@
 import {ID,isFighter,isEnemy,escapeHTML as esc} from "./rules.js";
-import {gmOnly,byId,chat,t,state,saveState} from "./helpers.js";
+import {gmOnly,byId,chat,t,state,saveState,directorMode} from "./helpers.js";
 export const session=()=>game.settings.get(ID,"session")??{active:false,phase:"prologue",pairs:[],cursor:0};
 const save=s=>game.settings.set(ID,"session",s);
 const phases=["prologue","chapter-one","chapter-two","interlude","final-chapter","curtain-call","cleanup"];
@@ -15,19 +15,19 @@ export async function sessionAction(op,data,user) {
     return chat(t("Partner"),`${esc(a.name)} ↔ ${esc(partner.name)}: synchronized shared Wish, Flower/Color, keyword and opposing Hope/Despair.`);
   }
   if(op==="session-start") {
-    if(state().active)throw Error("Finish the battle first");
+    if(!directorMode()&&state().active)throw Error("Finish the battle first");
     const pairs=[...new Set(data.actors)].map(byId);
     if(!pairs.length||pairs.some(a=>!isFighter(a)||a.type==="embraced"))throw Error("Choose Bringers (and Eclipsed for Irregular play)");
-    for(const a of pairs)if(!a.system.details.partner||byId(a.system.details.partner).type!=="sheath")throw Error(`${a.name}: link a Sheath first`);
+    if(!directorMode())for(const a of pairs)if(!a.system.details.partner||byId(a.system.details.partner).type!=="sheath")throw Error(`${a.name}: link a Sheath first`);
     const battle=state();battle.outcome=null;await saveState(battle);
     await save({active:true,phase:"prologue",pairs:pairs.map(a=>a.id),cursor:0});
   } else if(op==="session-next") {
     const s=session();if(!s.active)throw Error("No active session");
-    if(s.phase==="final-chapter"&&(state().active||!state().outcome))throw Error("Complete the Stellar Battle first");
+    if(!directorMode()&&s.phase==="final-chapter"&&(state().active||!state().outcome))throw Error("Complete the Stellar Battle first");
     if(scenes.includes(s.phase)&&s.cursor+1<s.pairs.length)s.cursor++;
     else {s.phase=phases[phases.indexOf(s.phase)+1]??"cleanup";s.cursor=0;if(s.phase==="cleanup")s.active=false;}
     await save(s);
   } else throw Error("Unknown session action");
   const s=session(),a=scenes.includes(s.phase)?byId(s.pairs[s.cursor]):null;
-  await chat("Session",`${esc(s.phase)}${a?` · ${esc(a.name)} / ${esc(byId(a.system.details.partner).name)}`:""}`);
+  await chat("Session",`${esc(s.phase)}${a?` · ${esc(a.name)} / ${esc(game.actors.get(a.system.details.partner)?.name??"Unlinked")}`:""}`);
 }

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {setup,user,getState,flags,MockItem} from './runtime-fixture.js';
+import {testStage,setup,user,getState,flags,MockItem} from './runtime-fixture.js';
 import {execute,attack,createCheck} from '../module/engine.js';
 import {skills,skillDocument} from '../module/library.js';
 import {saveState} from '../module/helpers.js';
@@ -55,7 +55,7 @@ test('Normal actor ownership protects charge, distortion and skill mutation',asy
 });
 test('Start, charge, Set/Actions/Cut flow preserves unused Set dice between rounds',async()=>{
  const {knight,ally,enemy,gm,rig}=await setup();await game.settings.set(ID,'battle',{active:false});
- await execute('start',{actors:[enemy.id,knight.id,ally.id],stage:'ragnarok'},gm);assert.equal(enemy.system.hp.value,26);
+ await execute('start',{actors:[enemy.id,knight.id,ally.id,testStage('ragnarok')],stage:'ragnarok'},gm);assert.equal(enemy.system.hp.value,26);
  await execute('advance',{},gm);assert.equal(getState().phase,'charge');
  for(const a of [enemy,knight,ally]){rig([1,2,3,4]);await execute('charge',{actor:a.id},gm);await execute('resolve',{},gm);}
  await execute('advance',{},gm);assert.equal(getState().phase,'actions');assert.equal(getState().actors[getState().turn],enemy.id);

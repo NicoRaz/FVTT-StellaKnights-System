@@ -1,0 +1,10 @@
+<div class="stella-content">
+  <h2>Stage · <input name="name" value="{{actor.name}}"></h2>
+  {{#if editable}}<button type="button" data-action="preset">Load Stage preset</button>{{/if}}
+  <label>Stage key<input name="system.key" value="{{system.key}}"></label>
+  <label>Description<textarea name="system.description" rows="3">{{system.description}}</textarea></label>
+  <label>Next Omen (0 = first)<input name="system.omen" type="number" min="0" value="{{system.omen}}"></label>
+  <details open><summary>Set Routine · Start of Round</summary><textarea name="system.setText" rows="10">{{system.setText}}</textarea></details>
+  <details open><summary>Routine / Omen · Start of Turn</summary>{{#each system.routines}}<fieldset><label>Name<input name="system.routines.{{@index}}.name" value="{{name}}"></label><label>Effect<textarea name="system.routines.{{@index}}.text" rows="5">{{text}}</textarea></label><button type="button" data-action="removeRoutine" data-index="{{@index}}">Remove Omen</button></fieldset>{{/each}}<button type="button" data-action="addRoutine">Add Omen</button></details>
+  <details open><summary>Stage Skills</summary>{{#each items}}<p><b>{{name}}</b> <button type="button" data-action="editSkill" data-item="{{id}}">Edit</button> <button type="button" data-action="useSkill" data-item="{{id}}">Post Skill</button></p>{{/each}}</details>
+</div>

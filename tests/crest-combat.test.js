@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {setup,MockItem,user} from './runtime-fixture.js';
+import {testStage,setup,MockItem,user} from './runtime-fixture.js';
 import {crestDocuments,crestItems,crestStats,setCrestItem,skillAllowed} from '../module/crest.js';
 import {skills,skillDocument,importLibrary} from '../module/library.js';
 import {execute,effectiveCharge,effectiveDefense,effectiveAttackBonus} from '../module/engine.js';
@@ -38,9 +38,9 @@ test('Replacing a Parent keeps one Item per type, recalculates stats and reserve
 });
 test('Battle uses native Combatants and native round/turn as the source of truth',async()=>{
  const {knight,ally,enemy,gm}=await setup();await saveState({...state(),active:false});
- await execute('start',{actors:[knight.id,enemy.id,ally.id],stage:'plushie'},gm);
- assert.equal(game.combats.length,1);assert.equal(game.combat.combatants.length,3);assert.equal(game.combat.round,1);
- assert.equal(state().actors[0],enemy.id);assert.equal(game.combat.turn,null);assert.equal(state().phase,'set');
+ await execute('start',{actors:[knight.id,enemy.id,ally.id,testStage('plushie')],stage:'plushie'},gm);
+ assert.equal(game.combats.length,1);assert.equal(game.combat.combatants.length,4);assert.equal(game.combat.round,1);
+ assert.equal(state().actors[0],knight.id);assert.equal(game.combat.turn,null);assert.equal(state().phase,'set');
  assert.equal(effectiveCharge(enemy),4);assert.equal(effectiveDefense(enemy),4);assert.equal(enemy.system.hp.value,26);
  assert.equal(effectiveAttackBonus(enemy),1);
  await game.combat.update({round:4,turn:2,'flags.stellaknights.battle.phase':'actions'});
@@ -51,19 +51,16 @@ test('Battle uses native Combatants and native round/turn as the source of truth
 });
 test('Native initiative order changes affect the roster; phase advances cannot target a different Combat',async()=>{
  const {knight,ally,enemy,gm}=await setup();await saveState({...state(),active:false});
- await execute('start',{actors:[enemy.id,knight.id,ally.id],stage:'ragnarok'},gm);
+ await execute('start',{actors:[enemy.id,knight.id,ally.id,testStage('ragnarok')],stage:'ragnarok'},gm);
  const cb=game.combat.combatants.find(c=>c.actorId===ally.id);
- await game.combat.updateEmbeddedDocuments('Combatant',[{_id:cb.id,initiative:2.5}]);assert.deepEqual(state().actors,[enemy.id,ally.id,knight.id]);
+ await game.combat.updateEmbeddedDocuments('Combatant',[{_id:cb.id,initiative:2.5}]);assert.deepEqual(state().actors,[ally.id,enemy.id,knight.id]);
  await assert.rejects(execute('advance',{combat:'different'},gm),/active Stellar/);
 });
-test('Foundry Combat next-turn controls run Stellar phases through the serialized GM workflow',async()=>{
+test('Foundry Combat next-turn controls move native turns without a phase cycle',async()=>{
  const {knight,ally,enemy,gm}=await setup();await saveState({...state(),active:false});
- await execute('start',{actors:[enemy.id,knight.id,ally.id],stage:'ragnarok'},gm);
- game.socket={on(){},emit(){}};registerSocket(execute);
- const {StellaCombat}=await import('../module/combat.js');
- // Exercise the native class method on a live mock Combat document.
- await StellaCombat.prototype.nextTurn.call(game.combat);assert.equal(state().phase,'charge');
- assert.equal(game.combat.turn,null);await assert.rejects(StellaCombat.prototype.nextTurn.call(game.combat),/must Charge/);
+ await execute('start',{actors:[enemy.id,knight.id,ally.id,testStage('ragnarok')],stage:'ragnarok',nativeControls:true},gm);
+ game.socket={on(){},emit(){}};registerSocket(execute);const {StellaCombat}=await import('../module/combat.js');Object.setPrototypeOf(game.combat,StellaCombat.prototype);
+ await StellaCombat.prototype.nextTurn.call(game.combat);assert.equal(state().phase,'actions');assert.equal(game.combat.turn,1);
 });
 test('Reserved or ungranted Skills cannot spend dice; Knight’s Etiquette is not tied to slot 1',async()=>{
  const {knight,enemy,gm}=await setup();const basic=knight.items.find(i=>i.system.key==='knights-etiquette');basic.system.number=6;basic.system.charge=1;
@@ -78,13 +75,12 @@ test('Bringer template exposes only current stats and has no Garden or starting 
  assert.ok(template.includes('{{currentCharge}}'));assert.ok(template.includes('{{derivedDefense}}'));assert.ok(!template.includes('Base Defense'));
 });
 
-test('Native next-round control waits for Cut; native phase transitions persist their new round',async()=>{
+test('Native next-round control advances Foundry Round without requiring Cut',async()=>{
  const {knight,ally,enemy,gm}=await setup();await saveState({...state(),active:false});
- await execute('start',{actors:[enemy.id,knight.id,ally.id],stage:'midnight-ball'},gm);
- game.socket={on(){},emit(){}};registerSocket(execute);const {StellaCombat}=await import('../module/combat.js');
- await assert.rejects(StellaCombat.prototype.nextRound.call(game.combat),/Complete Set/);
- await saveState({...state(),phase:'cut'});await StellaCombat.prototype.nextRound.call(game.combat);
- assert.equal(game.combat.round,2);assert.equal(state().phase,'set');assert.equal(effectiveCharge(knight),5);
+ await execute('start',{actors:[enemy.id,knight.id,ally.id,testStage('midnight-ball')],stage:'midnight-ball',nativeControls:true},gm);
+ game.socket={on(){},emit(){}};registerSocket(execute);const {StellaCombat}=await import('../module/combat.js');Object.setPrototypeOf(game.combat,StellaCombat.prototype);
+ await StellaCombat.prototype.nextRound.call(game.combat);
+ assert.equal(game.combat.round,2);assert.equal(state().phase,'actions');assert.equal(effectiveCharge(knight),5);
 });
 
 test('Native Parent UUID loadouts use authored Item stats and can omit Knight’s Etiquette entirely',async()=>{
@@ -118,11 +114,10 @@ test('v14 Combat creates and starts through the configured document class withou
  const {knight,ally,enemy,gm,rig}=await setup();await saveState({...state(),active:false});
  const {StellaCombat}=await import('../module/combat.js');CONFIG.Combat.documentClass=StellaCombat;
  delete globalThis.Combat;game.socket={on(){},emit(){}};registerSocket(execute);
- canvas.scene={id:'scene',tokens:[{id:'token-knight',actorId:knight.id},{id:'token-enemy',actorId:enemy.id},{id:'token-ally',actorId:ally.id}]};
- const combat=await ensureCombat([enemy,knight,ally]);assert.ok(combat instanceof StellaCombat);
+ canvas.scene={id:'scene',tokens:[{id:'token-knight',actorId:knight.id},{id:'token-enemy',actorId:enemy.id},{id:'token-ally',actorId:ally.id},{id:'stage-token',actorId:'stage'}]};
+ const combat=await ensureCombat([enemy,knight,ally,game.actors.get(testStage('none'))]);assert.ok(combat instanceof StellaCombat);
  for(const cb of combat.combatants){assert.equal(cb.sceneId,'scene');assert.ok(cb.tokenId);}
- await combat.startCombat();assert.equal(game.combat.id,combat.id);assert.equal(state().phase,'set');assert.equal(combat.round,1);
- await combat.nextTurn();assert.equal(state().phase,'charge');
- for(const actor of [enemy,knight,ally]){rig(Array(effectiveCharge(actor)).fill(4));await execute('charge',{actor:actor.id},gm);await execute('resolve',{},gm);}
- await combat.nextTurn();assert.equal(state().phase,'actions');assert.equal(combat.turn,0);assert.equal(state().actors[0],enemy.id);
+ await combat.startCombat();assert.equal(game.combat.id,combat.id);assert.equal(state().phase,'actions');assert.equal(combat.round,1);
+ await execute('charge-all',{combat:combat.id},gm);assert.equal(state().charged.length,3);
+ await combat.nextTurn();assert.equal(state().phase,'actions');assert.equal(combat.turn,1);assert.equal(state().actors[0],enemy.id);
 });
