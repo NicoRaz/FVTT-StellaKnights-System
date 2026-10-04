@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {slotUpdates} from '../module/loadout.js';
-class Base {async _prepareContext(){return {};}async _renderHTML(){return 'html';}_onRender(){} async render(){this.renders=(this.renders??0)+1;}}
+class Base {async _prepareContext(){return {};}async _renderHTML(){return 'html';}_onRender(){} _preSyncPartState(_id,_next,prior,state){state.scrollPositions=[['',prior.scrollTop,prior.scrollLeft??0]];} async _postRender(){await Promise.resolve();if(this.resetScrollAfterRender)this.element.querySelector('.stella-content').scrollTop=0;} async render(){this.renders=(this.renders??0)+1;}}
 globalThis.foundry={utils:{deepClone:structuredClone},applications:{api:{HandlebarsApplicationMixin:B=>B},sheets:{ActorSheetV2:Base,ItemSheetV2:Base},apps:{FilePicker:{implementation:class {constructor(options){globalThis.picker=options;}browse(){globalThis.browsed=true;}}}}}};
 let active=false;
 globalThis.game={i18n:{localize:key=>key},user:{isGM:true},settings:{get:()=>({active})},modules:new Map()};
@@ -60,7 +60,7 @@ test('Portrait and Token pickers update distinct native Actor paths; Tokenizer r
 test('Sheet rerenders restore scroll and preserve collapsed sections while Play locks character fields',async()=>{
   const {sheet}=fixture();const inputs=[{name:'name'},{name:'system.hp.value'}];const detail={dataset:{section:'loadout'},open:false,addEventListener(_type,handler){this.toggle=handler;}};
   const root={scrollTop:550,querySelectorAll:selector=>selector==='[name]'?inputs:[detail],addEventListener(){}};
-  sheet.element={querySelector:()=>root};await sheet._renderHTML({},{});root.scrollTop=0;sheet.editMode=false;sheet._onRender({},{});
+  sheet.element={querySelector:()=>root};sheet._preSyncPartState('main',{dataset:{}},{...root,dataset:{}},{});root.scrollTop=0;sheet.editMode=false;await sheet._onRender({},{});await sheet._postRender({},{});
   assert.equal(root.scrollTop,550);detail.toggle();assert.equal(sheet.sections.loadout,false);
   assert.equal(inputs[0].disabled,true);assert.equal(inputs[1].disabled,false);
   await StellaActorSheet.mode.call(sheet);assert.equal(sheet.editMode,true);assert.equal(sheet.renders,1);
@@ -84,9 +84,9 @@ test('v14 sidebar navigation uses changeTab and expands the sidebar for Combat a
 test('Details and Battle tabs preserve separate scroll positions across rerenders',async()=>{
  const {sheet}=fixture();const root={scrollTop:180,dataset:{activeTab:'details'}};
  sheet.element={querySelector:()=>root};await StellaActorSheet.switchTab.call(sheet,null,{dataset:{tab:'battle'}});
- assert.equal(sheet.activeTab,'battle');assert.equal(sheet.scrollPosition,0);await sheet._renderHTML({},{});assert.equal(sheet.scrollPosition,0);
+ assert.equal(sheet.activeTab,'battle');const battleState={};sheet._preSyncPartState('main',{dataset:{activeTab:'battle'}},root,battleState);assert.equal(battleState.scrollPositions[0][1],0);
  root.dataset.activeTab='battle';root.scrollTop=300;await StellaActorSheet.switchTab.call(sheet,null,{dataset:{tab:'details'}});
- assert.equal(sheet.scrollPosition,180);assert.equal(sheet.tabScroll.battle,300);
+ const detailsState={};sheet._preSyncPartState('main',{dataset:{activeTab:'details'}},root,detailsState);assert.equal(detailsState.scrollPositions[0][1],180);assert.equal(sheet.tabScroll.battle,300);
 });
 
 test('Block editor saves typed rows and supports adding, moving and deleting blocks',async()=>{
@@ -104,4 +104,20 @@ test('Use button forwards only locked Foundry targets without an aim dialog',asy
  await StellaActorSheet.use.call(sheet,null,{dataset:{item:items[0].id}});
  assert.equal(calls.length,1);assert.equal(calls[0].op,'use');assert.deepEqual(calls[0].data.targets,['target']);assert.equal(calls[0].data.directUse,true);
  assert.equal(StellaActorSheet.DEFAULT_OPTIONS.actions.charge,undefined);
+});
+
+
+test('Actor, Item and Stage preserve scroll through async render finalization and repeated updates',async()=>{
+ const {StageActorSheet}=await import('../module/stage-actor.js');
+ for(const Sheet of [StellaActorSheet,StellaItemSheet,StageActorSheet]){
+  assert.deepEqual(Sheet.PARTS.main.scrollable,['']);
+  const sheet=new Sheet(),root={dataset:{activeTab:'battle'},scrollTop:640,scrollLeft:12};
+  sheet.element={querySelector:()=>root};sheet.resetScrollAfterRender=true;
+  for(let n=0;n<3;n++){
+   const state={};sheet._preSyncPartState('main',root,root,state);
+   root.scrollTop=0;root.scrollLeft=0;
+   await sheet._postRender({},{});
+   assert.equal(root.scrollTop,640);assert.equal(root.scrollLeft,12);
+  }
+ }
 });

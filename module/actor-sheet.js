@@ -6,7 +6,8 @@ import {setupActor} from "./library.js";
 import {effectiveDefense,effectiveCharge,effectiveAttackBonus} from "./engine.js";
 import {slotUpdates,assertLoadoutEditable} from "./loadout.js";
 import {crestItems,skillAllowed,validateSkillSlot,setCrestItem,syncCrest} from "./crest.js";
-export class StellaActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
+import {PreserveSheetScroll} from './sheet-scroll.js';
+export class StellaActorSheet extends PreserveSheetScroll(foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2)) {
   static DEFAULT_OPTIONS={tag:"form",classes:["stella","stella-v14","sheet","actor"],position:{width:860,height:830},
     form:{submitOnChange:true,closeOnSubmit:false,handler:StellaActorSheet.submit},
     actions:{sheetTab:StellaActorSheet.switchTab,mode:StellaActorSheet.mode,portrait:StellaActorSheet.pickImage,token:StellaActorSheet.pickImage,tokenizer:StellaActorSheet.tokenizer,tokenConfig:StellaActorSheet.tokenConfig,library:StellaActorSheet.library,setup:StellaActorSheet.setup,use:StellaActorSheet.use,
@@ -24,15 +25,16 @@ export class StellaActorSheet extends foundry.applications.api.HandlebarsApplica
       partners:game.actors.filter(x=>x.id!==a.id&&(a.type==="bringer"?x.type==="sheath":a.type==="sheath"?x.type==="bringer":true)).map(x=>({id:x.id,name:x.name})),colors:Object.keys(COLORS),flowers:FLOWERS,karmaChoices:{hope:t("Hope"),despair:t("Despair")},
       slots:Array.from({length:6},(_,index)=>({number:index+1,item:skills.find(i=>i.system.number===index+1)})),items:skills};
   }
-  async _renderHTML(context,options) {
-    const root=this.element?.querySelector(".stella-content");
-    if(!root?.dataset?.activeTab||root.dataset.activeTab===(this.activeTab??'details'))this.scrollPosition=root?.scrollTop??this.scrollPosition??0;
-    return super._renderHTML(context,options);
+  _preSyncPartState(partId,newElement,priorElement,state) {
+    super._preSyncPartState(partId,newElement,priorElement,state);
+    if(partId==='main'&&newElement.dataset.activeTab!==priorElement.dataset.activeTab){
+      this.tabScroll??={};this.tabScroll[priorElement.dataset.activeTab]=priorElement.scrollTop;
+      state.scrollPositions=[['',this.tabScroll[newElement.dataset.activeTab]??0,0]];
+    }
   }
-  _onRender(context,options) {
-    super._onRender(context,options);
+  async _onRender(context,options) {
+    await super._onRender(context,options);
     const root=this.element.querySelector(".stella-content");
-    root.scrollTop=this.scrollPosition??0;
     this.sections??={basic:true,loadout:true,reserve:false};
     root.querySelectorAll("details[data-section]").forEach(d=>d.addEventListener("toggle",()=>{this.sections[d.dataset.section]=d.open;}));
     root.querySelectorAll("[name]").forEach(input=>{
@@ -81,7 +83,7 @@ export class StellaActorSheet extends foundry.applications.api.HandlebarsApplica
   static async switchTab(_event,target) {
     const next=target.dataset.tab;if(!['details','battle'].includes(next)||next===(this.activeTab??'details'))return;
     this.tabScroll??={};this.tabScroll[this.activeTab??'details']=this.element.querySelector('.stella-content').scrollTop;
-    this.activeTab=next;this.scrollPosition=this.tabScroll[next]??0;await this.render();
+    this.activeTab=next;await this.render();
   }
   static async mode() {if(this.isEditable){this.editMode=!this.editMode;await this.render();}}
   static async library() {

@@ -4,12 +4,13 @@ import {ID} from "./rules.js";
 import {notifyError} from "./helpers.js";
 import {slotUpdates,assertLoadoutEditable} from "./loadout.js";
 import {validateSkillSlot,syncCrest} from "./crest.js";
-export class StellaItemSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2) {
+import {PreserveSheetScroll} from './sheet-scroll.js';
+export class StellaItemSheet extends PreserveSheetScroll(foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2)) {
   static DEFAULT_OPTIONS={tag:"form",classes:["stella","stella-v14","sheet","item"],position:{width:700,height:800},actions:{addBlock:StellaItemSheet.addBlock,removeBlock:StellaItemSheet.removeBlock,blockUp:StellaItemSheet.moveBlock,blockDown:StellaItemSheet.moveBlock},form:{submitOnChange:true,closeOnSubmit:false,handler:StellaItemSheet.submit}};
-  static PARTS={main:{template:`systems/${ID}/templates/ability-sheet.html`}};
+  static PARTS={main:{scrollable:[''],template:`systems/${ID}/templates/ability-sheet.html`}};
   async _prepareContext(options) {return {...await super._prepareContext(options),item:this.item,system:this.item.system,blocks:(this.item.system.blocks??[]).map(b=>({...b,isModifier:b.op==='modifier',isCharge:b.op==='charge',isChat:b.op==='chat',useSource:!['chat','repeat','if'].includes(b.op)})),blockOps:BLOCK_OPS,blockSources:BLOCK_SOURCES,blockTargets:BLOCK_TARGETS,blockStats:{attack:"Attack bonus",defense:"Defense"},blockDurations:{round:"Round",battle:"Battle",persistent:"Persistent"},editable:this.isEditable,crest:["flower","color"].includes(this.item.type),skillKeysText:(this.item.system.skillKeys??[]).join("\n"),children:game.items.filter(i=>i.type==="ability"&&this.item.system.skillKeys?.includes(i.system.key))};}
-  _onRender(context,options) {
-    super._onRender(context,options);
+  async _onRender(context,options) {
+    await super._onRender(context,options);
     if(this.item.type==='ability'){
       const root=this.element.querySelector('.stella-content');
       root.addEventListener('dragstart',event=>{const handle=event.target.closest('.block-handle');if(this.isEditable&&handle)event.dataTransfer.setData('text/plain',JSON.stringify({type:'StellaSkillBlock',index:Number(handle.dataset.blockIndex)}));});

@@ -21,6 +21,12 @@ Repository สำหรับ v14: [https://github.com/NicoRaz/FVTT-StellaKnight
 
 > Flower/Color Items และ Foundry Combat พร้อมใช้งานในเวอร์ชัน 1.2.0
 
+## เวอร์ชัน 1.3.2
+
+- เก็บตำแหน่ง scroll ก่อนเปลี่ยน DOM และคืนค่าหลัง render เสร็จ สำหรับชีทตัวละคร, Item และ Stage
+- Details / Stellar Battle จำตำแหน่งเลื่อนแยกกัน และกำหนดพื้นที่เลื่อนเดียวในชีท
+- ทดสอบอัตโนมัติผ่าน 84 tests พร้อมตรวจปุ่มเต๋า, Block และ Omen ในเบราว์เซอร์
+
 ## เวอร์ชัน 1.3.1
 
 - แก้จอดำตอนเปิด World: Garden Region Behavior กำหนด schema โดยไม่เรียกเมธอด abstract ของ Foundry

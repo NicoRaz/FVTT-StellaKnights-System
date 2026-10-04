@@ -3,9 +3,10 @@ import {stages} from './library.js';
 import {formDialog,notifyError} from './helpers.js';
 import {request} from "./socket.js";
 import {stageDocument} from './stage-data.js';
-export class StageActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
+import {PreserveSheetScroll} from './sheet-scroll.js';
+export class StageActorSheet extends PreserveSheetScroll(foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2)) {
   static DEFAULT_OPTIONS={tag:'form',classes:['stella','stella-v14','sheet','actor'],position:{width:760,height:800},form:{submitOnChange:true,closeOnSubmit:false,handler:StageActorSheet.submit},actions:{addRoutine:StageActorSheet.addRoutine,removeRoutine:StageActorSheet.removeRoutine,preset:StageActorSheet.preset,editSkill:StageActorSheet.editSkill,useSkill:StageActorSheet.useSkill}};
-  static PARTS={main:{template:`systems/${ID}/templates/stage-sheet.html`}};
+  static PARTS={main:{scrollable:[''],template:`systems/${ID}/templates/stage-sheet.html`}};
   async _prepareContext(options){return {...await super._prepareContext(options),actor:this.actor,system:this.actor.system,items:[...this.actor.items],editable:this.isEditable};}
   static async submit(_event,_form,data){if(!this.isEditable)return;const changes=data.object,routines=structuredClone(this.actor.system.routines);let changed=false;
     for(const [key,value] of Object.entries(changes)){const match=key.match(/^system\.routines\.(\d+)\.(name|text)$/);if(match&&routines[Number(match[1])]){routines[Number(match[1])][match[2]]=value;delete changes[key];changed=true;}}

@@ -19,8 +19,8 @@
 @media(max-width:650px){.stella-v14 .set-ability,.stella-v14 .stella-fields{grid-template-columns:1fr}.stella-v14 .stella-stats{grid-template-columns:repeat(2,1fr)}}
 .stella.stella-v14 .set-ability .ability{border:1px solid var(--stella-line);padding:12px;height:auto}.stella.stella-v14 .set-ability .ability .title{font:700 17px Georgia,serif;text-align:left}.stella.stella-v14 .title-header{background:#794660;border:0;border-bottom:2px solid #4f2d40}.stella-v14 .garden.blank{visibility:hidden}
 /* Keep one sheet scroller: updates restore this element's position. */
-.stella-v14.sheet.actor .window-content{overflow:hidden;min-height:0}
-.stella-v14.sheet.actor .stella-content{height:100%;min-height:0;overflow-y:auto;padding-right:6px}
+.stella-v14.sheet .window-content{display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.stella-v14.sheet .stella-content{flex:1 1 0;min-height:0;overflow-y:auto;padding-right:6px;overflow-anchor:none;scroll-behavior:auto}
 .stella-v14 .mode-play .edit-only{display:none}
 .stella-v14 input:disabled,.stella-v14 select:disabled,.stella-v14 textarea:disabled{opacity:1;background:transparent;border-color:transparent;color:var(--stella-ink)}
 .stella-v14 .stella-portraits{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 116px}
